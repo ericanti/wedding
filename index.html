@@ -58,7 +58,7 @@
 
     .nav-mobile {
       display: none; position: fixed; inset: 0; background: var(--cream);
-      z-index: 999; flex-direction: column; align-items: center; justify-content: center; gap: 28px;
+      z-index: 1001; flex-direction: column; align-items: center; justify-content: center; gap: 28px;
     }
     .nav-mobile.open { display: flex; }
     .nav-mobile a { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-style: italic; color: var(--brown); }
@@ -549,31 +549,46 @@
       display: flex; align-items: center; justify-content: center;
     }
 
+    /* Desktop story text — vertical progression: ch1 top, ch2 middle, ch3 bottom */
+    @media (min-width: 861px) {
+      #chText0 { justify-content: flex-start; padding-top: 11%; }
+      #chText2 { justify-content: flex-end;   padding-bottom: 9%; }
+    }
+
+    /* ch2 text duplicate — only shown on mobile inside left text column */
+    .ch-mobile-ch2 { display: none; }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 1000px) {
       .products-grid { grid-template-columns: repeat(3,1fr); }
     }
     @media (max-width: 860px) {
-      .story-sticky { grid-template-columns: 1fr; grid-template-rows: auto auto auto; height: auto; min-height: 100vh; }
-      .ch-text-panel { height: auto; min-height: 30vh; }
-      .ch-text-layer { position: relative; inset: auto; padding: 20px 28px !important; text-align: center; }
-      .ch-photo-panel { padding: 0 32px 20px; }
-      .photo-stack-wrap { width: clamp(200px,55vw,280px); height: clamp(250px,69vw,350px); }
+      /* Story: text left | photos right — 2-column sticky layout */
+      .story-sticky { grid-template-columns: 0.7fr 1.4fr; height: 72vh; overflow: hidden; }
+      .ch-text-right { display: none; }
+      .ch-mobile-ch2 { display: flex; }
+      .ch-text-panel { height: 72vh; }
+      .ch-text-layer { position: absolute; inset: 0; padding: 20px 8px 20px 16px !important; text-align: left; }
+      .ch-body-text { font-size: 0.82rem; line-height: 1.65; }
+      .ch-title-lg { font-size: clamp(1.2rem, 4vw, 1.8rem); margin-bottom: 12px; }
+      .ch-photo-panel { padding: 6px 8px 6px 32px; transform: translateY(-24px); }
+      .photo-stack-wrap { width: clamp(145px, 47vw, 185px); height: clamp(180px, 58vw, 230px); }
       .d-cards { grid-template-columns: 1fr; max-width: 480px; }
     }
     @media (max-width: 768px) {
       #navbar { padding: 0 20px; }
       .nav-links, .nav-rsvp { display: none; }
       .nav-toggle { display: block; }
-      .sp1,.sp2,.sp3,.sp4 { width: clamp(76px,15vw,110px); border-radius: 6px; }
       .products-grid { grid-template-columns: repeat(2,1fr); }
       #detalhes, #presentes, #rsvp-venue { padding: 72px 24px; }
+      #countdown-section { padding: 60px 16px; }
       .rsvp-box { padding: 32px 22px; }
     }
     @media (max-width: 480px) {
-      .countdown { gap: 0; }
-      .cd-unit { padding: 0 14px; }
-      .cd-colon { font-size: 2.8rem; }
+      .countdown { flex-wrap: nowrap; gap: 0; overflow: hidden; }
+      .cd-num { font-size: clamp(2.2rem, 7.5vw, 3.5rem); }
+      .cd-unit { padding: 0 5px; }
+      .cd-colon { font-size: 1.8rem; }
       .products-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
     }
   </style>
@@ -682,6 +697,12 @@
           <span class="ch-num-label">Capítulo 01</span>
           <h3 class="ch-title-lg">O Encontro</h3>
           <p class="ch-body-text">Nos conhecemos em um aplicativo e nos conectamos imediatamente. O que começou como uma simples conversa se transformou em nosso primeiro encontro, e muitos outros depois. Desde o início, estar juntos sempre pareceu natural e fácil.</p>
+        </div>
+
+        <div class="ch-text-layer ch-mobile-ch2" id="chText1m">
+          <span class="ch-num-label">Capítulo 02</span>
+          <h3 class="ch-title-lg">Nossa Vida Cotidiana</h3>
+          <p class="ch-body-text">Com o tempo, passamos a fazer tudo juntos. De assistir filmes e estudar a cozinhar, treinar, pintar e encontrar pequenas aventuras — rapidamente nos tornamos melhores amigos.</p>
         </div>
 
         <div class="ch-text-layer" id="chText2">
@@ -1117,6 +1138,29 @@ function layoutSidePhotos() {
 
   const [s1, s2, s3, s4] = [...sideWraps];
 
+  if (winW < 600) {
+    /* Mobile: all 4 photos in two stacked clusters */
+    const side = (winW - Math.round(winW * 0.32)) / 2;
+    const lgW = Math.round(side * 0.88);  const lgH = Math.round(lgW * 1.45);
+    const smW = Math.round(side * 0.78);  const smH = Math.round(smW * 0.72);
+
+    /* Equal horizontal gap from portrait edges (slight edge bleed on outermost photos) */
+    const pL = Math.round((eW - Math.round(winW * 0.32)) / 2);
+    const pR = eW - pL;
+    const G  = pL - lgW + 4;
+
+    /* Vertical: keep original diagonal imbalance; center the avg on portrait midpoint */
+    const clusterH = lgH + 8 + smH;
+    const topL = Math.round(eH * 0.53 - eH * 0.07 - clusterH / 2);
+    const topR = Math.round(eH * 0.53 + eH * 0.07 - clusterH / 2);
+
+    applyLayout(s1, pL - G - lgW, topL,            lgW, lgH);
+    applyLayout(s2, pL - G - smW, topL + lgH + 8,  smW, smH);
+    applyLayout(s3, pR + G,       topR,             smW, smH);
+    applyLayout(s4, pR + G,       topR + smH + 8,  lgW, lgH);
+    return;
+  }
+
   applyLayout(s1, sp1L, sp1T, lgW, lgH);
   applyLayout(s2, sp2L, sp2T, smW, smHL);
   applyLayout(s3, sp3L, sp3T, smW, smHR);
@@ -1139,7 +1183,7 @@ function animateHero() {
   const e   = easeOut(scP);
 
   /* Symmetric horizontal clip — collage is always centred on the viewport. */
-  const portraitW = Math.max(winW * 0.19, 180);
+  const portraitW = winW < 600 ? Math.round(winW * 0.32) : Math.max(winW * 0.19, 180);
   const sideInset = Math.max(0, (winW - portraitW) / 2 / winW * 100);
   const clipSide  = lerp(0, sideInset, e);
 
@@ -1272,14 +1316,17 @@ function animateStacks() {
   const texts = [
     document.getElementById('chText0'),
     document.getElementById('chText1'),
-    document.getElementById('chText2')
+    document.getElementById('chText2'),
+    document.getElementById('chText1m'),
   ];
+  const textChapter = [0, 1, 2, 1];
 
   texts.forEach((txt, i) => {
     if (!txt) return;
 
-    const start = CH_STARTS[i];
-    const end = CH_ENDS[i];
+    const chIdx = textChapter[i];
+    const start = CH_STARTS[chIdx];
+    const end = CH_ENDS[chIdx];
 
     let opacity = 1;
 
