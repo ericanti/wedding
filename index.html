@@ -1379,11 +1379,15 @@ const fmt = v => v>0
   ? 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2})
   : '(Valor à sua escolha)';
 
-function getPurchased()     { return JSON.parse(localStorage.getItem('wPurchased')||'[]'); }
+function getPurchased() { return JSON.parse(localStorage.getItem('wPurchased')||'[]'); }
 function savePurchased(arr) {
   localStorage.setItem('wPurchased', JSON.stringify(arr));
-  /* Sync to Firebase for cross-device visibility */
-  if (_db) _db.ref('purchased').set(arr).catch(()=>{});
+  if (_db) {
+    /* Write as {ItemName: true/false} — matches the Firebase dashboard format */
+    const obj = {};
+    products.forEach(p => { obj[p.name] = arr.includes(p.name); });
+    _db.ref('purchased').set(obj).catch(()=>{});
+  }
 }
 
 function markCardPurchased(name) {
@@ -1426,9 +1430,12 @@ function buildGrid() {
   /* Listen for real-time updates from other devices */
   if (_db) {
     _db.ref('purchased').on('value', snapshot => {
-      const remote = snapshot.val() || [];
-      /* Merge remote purchased into local */
-      const local = getPurchased();
+      const val = snapshot.val();
+      /* Handle object format {ItemName: true/false} from Firebase */
+      const remote = val && typeof val === 'object' && !Array.isArray(val)
+        ? Object.keys(val).filter(k => val[k] === true)
+        : (Array.isArray(val) ? val.filter(Boolean) : []);
+      const local  = getPurchased();
       const merged = [...new Set([...local, ...remote])];
       localStorage.setItem('wPurchased', JSON.stringify(merged));
       merged.forEach(markCardPurchased);
