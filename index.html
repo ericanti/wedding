@@ -1386,7 +1386,7 @@ function savePurchased(arr) {
     /* Write as {ItemName: true/false} — matches the Firebase dashboard format */
     const obj = {};
     products.forEach(p => { obj[p.name] = arr.includes(p.name); });
-    _db.ref('purchased').set(obj).catch(()=>{});
+    _db.ref('/').set(obj).catch(()=>{});
   }
 }
 
@@ -1429,7 +1429,7 @@ function buildGrid() {
 
   /* Listen for real-time updates from other devices */
   if (_db) {
-    _db.ref('purchased').on('value', snapshot => {
+    _db.ref('/').on('value', snapshot => {
       const val = snapshot.val();
       /* Handle object format {ItemName: true/false} from Firebase */
       const remote = val && typeof val === 'object' && !Array.isArray(val)
