@@ -1,11 +1,5 @@
 {
-  "version": 2,
-  "builds": [
-    { "src": "api/*.js", "use": "@vercel/node" }
-  ],
-  "routes": [
-    { "src": "/api/create-payment-intent", "dest": "/api/create-payment-intent.js" },
-    { "src": "/",        "dest": "/index.html" },
-    { "src": "/(.*)",    "dest": "/$1" }
-  ]
+  "functions": {
+    "api/create-payment-intent.js": {}
+  }
 }
