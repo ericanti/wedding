@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "PowerShell(Rename-Item -Path \"C:\\\\Users\\\\erica\\\\wedding\\\\Eric+Olivia\" -NewName \"Eric-Olivia\")"
+      "PowerShell(Rename-Item -Path \"C:\\\\Users\\\\erica\\\\wedding\\\\Eric+Olivia\" -NewName \"Eric-Olivia\")",
+      "mcp__Claude_Preview__preview_start"
     ]
   }
 }

@@ -895,6 +895,10 @@
       <span class="section-label">Lista de Presentes</span>
       <h2>Nossos Presentes</h2>
       <p>Cada presente é um pedacinho do nosso lar. Clique para presentear via PIX.</p>
+      <div style="display:flex;align-items:flex-start;gap:10px;background:var(--offwhite);border:1px solid var(--border);border-left:3px solid var(--gold);padding:14px 18px;margin:0 auto 32px;max-width:560px;text-align:left;">
+        <svg style="flex-shrink:0;margin-top:2px" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <p style="font-size:.82rem;line-height:1.65;color:var(--brown-mid);font-family:'Inter',sans-serif;margin:0"><strong style="color:var(--brown)">Por favor, não traga presentes físicos.</strong> Como estaremos viajando logo após o casamento, não teremos como levá-los conosco. Os presentes desta lista são todos via PIX — muito mais prático para todos!</p>
+      </div>
       <div class="pix-banner">
         <span class="qs-label">Contribuição direta:</span>
         <button class="qs-btn" onclick="openPixDirect()">
@@ -935,7 +939,7 @@
   <div class="enc-content">
     <span class="section-label">Até Lá</span>
     <h2>Não vemos a hora de te ver!</h2>
-    <p>Sua presença é o maior presente que poderíamos receber. Estamos contando os dias para celebrar esse momento tão especial ao lado de quem amamos.</p>
+    <p>Estamos contando os dias para celebrar esse momento tão especial ao lado de quem amamos.</p>
     <p class="enc-sig">— Olivia &amp; Eric</p>
   </div>
 </section>
@@ -1373,6 +1377,14 @@ const products = [
   { name:'Roupa de Cama',     price:80,  img:'./registry/bedding.jpg'         },
   { name:'Potes',             price:180, img:'./registry/pots.jpg'            },
   { name:'Assadeiras',        price:190, img:'./registry/assadeiras.jpg'      },
+  { name:'Panela de Arroz',   price:180, img:'./registry/ricecooker.jpg'      },
+  { name:'Ferro de Passar',   price:150, img:'./registry/iron.jpg'            },
+  { name:'Forno Elétrico',    price:380, img:'./registry/forno.jpg'           },
+  { name:'Mixer de Mão',      price:140, img:'./registry/handblender.jpg'     },
+  { name:'Barraca de Camping',price:450, img:'./registry/campingtent.jpg'     },
+  { name:'Jogo de Talheres',  price:160, img:'./registry/talheres.jpg'        },
+  { name:'Criado-Mudo',       price:280, img:'./registry/night stand.jpg'     },
+  { name:'Jogo de Toalhas',   price:120, img:'./registry/towels.jpg'          },
 ];
 
 const fmt = v => v>0
