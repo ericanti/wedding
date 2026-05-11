@@ -1380,14 +1380,10 @@ const fmt = v => v>0
   : '(Valor à sua escolha)';
 
 function getPurchased() { return JSON.parse(localStorage.getItem('wPurchased')||'[]'); }
-function savePurchased(arr) {
+function savePurchased(arr, newItem) {
   localStorage.setItem('wPurchased', JSON.stringify(arr));
-  if (_db) {
-    /* Write as {ItemName: true/false} — matches the Firebase dashboard format */
-    const obj = {};
-    products.forEach(p => { obj[p.name] = arr.includes(p.name); });
-    _db.ref('/').set(obj).catch(()=>{});
-  }
+  /* Only write the specific newly-purchased item — never overwrites other items */
+  if (_db && newItem) _db.ref('/').child(newItem).set(true).catch(()=>{});
 }
 
 function markCardPurchased(name) {
@@ -1476,7 +1472,7 @@ function confirmPayment() {
 
   /* Mark locally */
   const bought = getPurchased();
-  if (!bought.includes(name)) { bought.push(name); savePurchased(bought); }
+  if (!bought.includes(name)) { bought.push(name); savePurchased(bought, name); }
 
   /* Update card UI immediately */
   markCardPurchased(name);
