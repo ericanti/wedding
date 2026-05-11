@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Olivia & Eric — 22.08.26</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,600&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── VARIABLES ── */
+    :root {
+      --cream:     #F5F1EB;
+      --cream-dk:  #EDE8DF;
+      --offwhite:  #FDFAF6;
+      --brown:     #2C1810;
+      --brown-mid: #5A3E2B;
+      --brown-lt:  #8B6948;
+      --border:    #DDD6C8;
+      --gold:      #B89060;
+      --gold-lt:   #D4B080;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--cream); color: var(--brown); overflow-x: hidden; }
+    img  { display: block; width: 100%; height: 100%; object-fit: cover; }
+    a    { text-decoration: none; color: inherit; }
+
+    /* ── NAV ── */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      padding: 0 48px;
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; height: 72px;
+      padding: 0 12px;
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 1.05rem; letter-spacing: .1em; color: white;
+    }
+    .nav-links { display: flex; list-style: none; gap: 32px; }
+    .nav-links a {
+      font-size: .65rem; font-weight: 500; letter-spacing: .15em; text-transform: uppercase;
+      color: rgba(255,255,255,.82);
+    }
+    .nav-rsvp {
+      font-size: .63rem; font-weight: 600; letter-spacing: .15em; text-transform: uppercase;
+      padding: 8px 20px; background: white; color: var(--brown); border-radius: 50px;
+    }
+    .nav-toggle {
+      display: none; background: none; border: none; cursor: pointer;
+      color: white; font-size: 1.4rem;
+    }
+
+    .nav-mobile {
+      display: none; position: fixed; inset: 0; background: var(--cream);
+      z-index: 999; flex-direction: column; align-items: center; justify-content: center; gap: 28px;
+    }
+    .nav-mobile.open { display: flex; }
+    .nav-mobile a { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-style: italic; color: var(--brown); }
+    .nmclose { position: absolute; top: 24px; right: 28px; font-size: 2rem; cursor: pointer; color: var(--brown); background: none; border: none; }
+
+    /* ── HERO SCROLL (300vh) ── */
+    #heroScroll { height: 300vh; position: relative; }
+
+    #heroSticky {
+      position: sticky; top: 0; height: 100vh; overflow: hidden;
+      background: var(--cream); /* cream shows on sides when photo clips to portrait */
+    }
+
+    /* Main photo — starts full-screen (slightly zoomed), clips to portrait + shrinks vertically on scroll */
+    #heroMainWrap {
+      position: absolute; inset: 0; z-index: 2;
+      will-change: clip-path; overflow: hidden;
+      clip-path: inset(0% 0% round 18px);
+    }
+    #heroMainWrap img {
+      object-position: center 40%;
+      will-change: transform;
+      transform: scale(1.06); /* initial slight zoom */
+    }
+
+    /* Bottom gradient for name readability */
+    #heroInnerOverlay {
+      position: absolute; inset: 0; z-index: 3;
+      background: linear-gradient(to top, rgba(0,0,0,.55) 0%, rgba(0,0,0,.12) 32%, transparent 58%);
+      pointer-events: none; will-change: opacity;
+    }
+
+    /* Side photos — JS sets left/top/width/height dynamically for any viewport */
+    .sp-wrap {
+      position: absolute; z-index: 4; opacity: 0;
+      will-change: opacity, transform; overflow: hidden;
+      border-radius: 14px;
+      box-shadow: 0 6px 28px rgba(44,24,16,.20);
+    }
+    .sp-wrap img { object-fit: cover; width: 100%; height: 100%; }
+    /* Engagement: show heads + bodies */
+    .sp1 img { object-position: center 35%; }
+
+    /* Names at bottom of hero photo */
+    #heroBottom {
+      position: absolute; z-index: 6;
+      bottom: 8%; left: 50%; transform: translateX(-50%);
+      text-align: center; color: white;
+      pointer-events: none; will-change: opacity;
+      white-space: nowrap;
+    }
+    #heroTitle {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: clamp(4rem,10vw,9rem); font-weight: 300;
+      line-height: 1; letter-spacing: .02em;
+      text-shadow: 0 4px 40px rgba(0,0,0,.35);
+    }
+    #heroLine {
+      width: 100%; height: 1px; background: rgba(255,255,255,.45); margin-top: 14px;
+    }
+
+    /* Scroll cue — bottom right */
+    .hero-scroll-cue {
+      position: absolute; bottom: 5%; right: 5%;
+      z-index: 8; display: flex; align-items: center; gap: 10px;
+      color: rgba(255,255,255,.55);
+      animation: cue-pulse 2.6s ease-in-out infinite;
+    }
+    .hero-scroll-cue span { font-size: .52rem; letter-spacing: .28em; text-transform: uppercase; }
+    .hero-scroll-cue svg  { width: 28px; height: 10px; }
+    @keyframes cue-pulse {
+      0%,100% { opacity: .55; transform: translateX(0); }
+      50%      { opacity: .9;  transform: translateX(4px); }
+    }
+
+    /* ── CORDIALLY INVITED ── */
+    #invited {
+      min-height: 80vh; display: flex; align-items: center; justify-content: center;
+      background: var(--cream); padding: 80px 40px;
+    }
+    .invited-inner { text-align: center; max-width: 900px; }
+    .inv-sentence {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: clamp(1.6rem, 3.4vw, 2.6rem); color: var(--brown);
+      line-height: 1.5; font-weight: 400;
+    }
+    .inv-fade { color: var(--brown-lt); }
+
+    /* ── OUR STORY ── */
+    #historia { background: var(--cream); }
+
+    /* Sticky "nossa história" heading — stays at top during entire story scroll */
+    .story-header-sticky {
+      position: sticky; top: 0; z-index: 10;
+      height: 28vh; min-height: 90px;
+      background: var(--cream);
+      display: flex; align-items: flex-end; justify-content: center;
+      padding-bottom: 10px;
+      pointer-events: none;
+    }
+    .story-header-sticky h2 {
+      font-family: 'Cormorant Garamond', serif; font-weight: 300;
+      font-size: clamp(3.5rem, 10vw, 9rem); color: var(--brown); line-height: .92;
+    }
+
+    /* Single tall scroll container for all 8 photos */
+    .story-scroll { height: 1000vh; position: relative; }
+
+    /* Sticky 3-column viewport: [text-left] [photo stack] [text-right] */
+    .story-sticky {
+      position: sticky; top: 28vh; height: 72vh; overflow: hidden;
+      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+      background: var(--cream); 
+    }
+
+    /* Text columns (left and right) */
+    .ch-text-panel {
+      position: relative; height: 72vh;
+      display: flex; align-items: center;
+    }
+    .ch-text-layer {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; justify-content: center;
+      text-align: left; opacity: 0; pointer-events: none;
+    }
+    /* Ch1 & Ch3 text — left of photo stack */
+    .ch-text-left .ch-text-layer  { padding: 30px 32px 30px 60px; }
+    /* Ch2 text — right of photo stack */
+    .ch-text-right .ch-text-layer { padding: 30px 60px 30px 32px; }
+    .ch-num-label {
+      font-size: .6rem; letter-spacing: .28em; text-transform: uppercase;
+      color: var(--gold); font-weight: 500; margin-bottom: 16px; display: block;
+    }
+    .ch-title-lg {
+      font-family: 'Cormorant Garamond', serif; font-weight: 600;
+      font-size: clamp(1.7rem,3vw,2.6rem); color: var(--brown);
+      margin-bottom: 22px; line-height: 1.12;
+    }
+    .ch-body-text {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 1.08rem; line-height: 1.95; color: var(--brown-mid);
+      max-width: 400px;
+    }
+
+    /* Single photo stack column */
+    .ch-photo-panel {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 40px;
+      transform: translateY(-60px);
+    }
+    .photo-stack-wrap {
+      position: relative;
+      width: min(520px, 42vw);
+      height: min(430px, 38vw);
+      overflow: visible;
+    }
+
+    .stack-photo {
+      position: absolute;
+      inset: 0;
+      background: #F8F4EA;
+      padding: 12px 12px 34px;
+      border-radius: 4px;
+      box-shadow: 0 8px 24px rgba(44,24,16,.16);
+      transform-origin: center center;
+      opacity: 0;
+      will-change: transform, opacity;
+      cursor: zoom-in;
+    }
+
+    .stack-photo img {
+      width: 100%;
+      height: calc(100% - 34px);
+      object-fit: cover;
+      border-radius: 2px;
+    }
+    /* Transition fires once card is settled — applies to hover-in/out as well */
+    .stack-photo.in-stack {
+      transition: transform 0.25s ease, opacity 0.3s ease;
+    }
+
+    .sp-caption {
+      display: block; text-align: center; font-family: 'Cormorant Garamond', serif;
+      font-style: italic; font-size: 1.2rem; color: var(--brown-mid);
+      padding: 8px 6px 0; line-height: 1.3;
+    }
+    .stack-photo:hover {
+      transform:
+        translateX(var(--settled-x, 0px))
+        translateY(calc(var(--settled-y, 0px) - 18px))
+        rotate(var(--settled-rot, 0deg))
+        scale(calc(var(--settled-scale, 1) + 0.03)) !important;
+    }
+
+    /* ── COUNTDOWN — sticky scroll wrapper ── */
+    .countdown-scroll { height: 200vh; position: relative; }
+    #countdown-section {
+      position: sticky; top: 0;
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: var(--cream); padding: 80px 40px;
+    }
+    .countdown-inner { text-align: center; }
+    .cnt-pre {
+      display: block; font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: clamp(1.6rem,3.5vw,2.6rem); color: var(--brown-mid); margin-bottom: 28px;
+    }
+    .cnt-date {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem,8vw,7rem); font-weight: 300; color: var(--brown);
+      line-height: 1; margin-bottom: 52px;
+    }
+    .countdown { display: flex; justify-content: center; align-items: baseline; flex-wrap: wrap; }
+    .cd-unit  { text-align: center; padding: 0 28px; }
+    .cd-num   {
+      display: block; font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.5rem,9vw,7rem); font-weight: 300; color: var(--brown); line-height: 1;
+    }
+    .cd-lbl   { display: block; font-size: .56rem; letter-spacing: .24em; text-transform: uppercase; color: var(--brown-lt); margin-top: 10px; }
+    .cd-colon { font-family: 'Cormorant Garamond', serif; font-size: 4rem; font-weight: 300; color: var(--border); padding-bottom: 14px; }
+
+    /* ── RSVP + VENUE ── */
+    #rsvp-venue {
+      background: var(--cream); padding: 100px 40px;
+    }
+    .rv-inner { max-width: 720px; margin: 0 auto; }
+
+    .venue-photo-wrap {
+      border-radius: 8px; overflow: hidden; margin-bottom: 32px;
+      box-shadow: 0 14px 60px rgba(44,24,16,.14);
+    }
+    .venue-photo-wrap img { aspect-ratio: 16/9; object-fit: cover; }
+
+    .venue-info { text-align: center; margin-bottom: 52px; }
+    .venue-info h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem,3.5vw,2.8rem); font-weight: 400; color: var(--brown); margin-bottom: 10px;
+    }
+    .venue-info p { font-size: .71rem; letter-spacing: .17em; text-transform: uppercase; color: var(--brown-mid); }
+
+    .rsvp-box {
+      background: var(--offwhite); border: 1px solid var(--border);
+      border-radius: 2px; padding: 44px 40px;
+    }
+    .rsvp-box h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem; font-weight: 400; color: var(--brown);
+      text-align: center; margin-bottom: 28px;
+    }
+    .rsvp-form { display: flex; flex-direction: column; gap: 14px; }
+    .form-field { display: flex; flex-direction: column; gap: 5px; }
+    .form-field label {
+      font-size: .59rem; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--brown-lt); font-weight: 500;
+    }
+    .form-field input, .form-field select, .form-field textarea {
+      background: white; border: 1px solid var(--border); color: var(--brown);
+      padding: 11px 14px; font-size: .87rem; font-family: 'Inter', sans-serif;
+      border-radius: 1px; outline: none; transition: border-color .3s;
+    }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--brown-lt); }
+    .form-field input::placeholder, .form-field textarea::placeholder { color: rgba(92,62,43,.35); }
+    .form-field select option { background: white; }
+    .form-field textarea { resize: vertical; min-height: 80px; }
+    .rsvp-submit {
+      padding: 14px; background: var(--brown); border: none; color: white;
+      font-size: .66rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase;
+      cursor: pointer; border-radius: 1px; margin-top: 4px;
+      transition: background .3s; font-family: 'Inter', sans-serif;
+    }
+    .rsvp-submit:hover { background: var(--brown-mid); }
+    .rsvp-thanks { display: none; text-align: center; padding: 36px 16px; }
+    .rsvp-thanks .ti { font-size: 2rem; color: var(--gold); margin-bottom: 14px; }
+    .rsvp-thanks h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; margin-bottom: 8px; }
+    .rsvp-thanks p  { font-size: .84rem; color: var(--brown-mid); line-height: 1.6; }
+
+    /* ── ADDITIONAL DETAILS ── */
+    #detalhes { background: var(--cream); padding: 100px 40px; }
+    .section-inner { max-width: 900px; margin: 0 auto; }
+    .section-hdr { text-align: center; margin-bottom: 56px; }
+    .section-label {
+      font-size: .61rem; letter-spacing: .26em; text-transform: uppercase;
+      color: var(--gold); font-weight: 500; margin-bottom: 14px; display: block;
+    }
+    .section-heading {
+      font-family: 'Cormorant Garamond', serif; font-weight: 400;
+      line-height: 1.2; color: var(--brown);
+    }
+    .divider { width: 44px; height: 1px; background: var(--gold); margin: 20px auto; }
+
+    .d-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .d-card {
+      background: var(--cream); border: 1px solid var(--border); border-radius: 2px;
+      padding: 44px 30px; text-align: center;
+    }
+    .d-icon { width: 30px; height: 30px; margin: 0 auto 18px; color: var(--gold); }
+    .d-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 500; color: var(--brown); margin-bottom: 14px; }
+    .d-card p, .d-card li { font-size: .84rem; line-height: 1.88; color: var(--brown-mid); }
+    .d-card ul { list-style: none; text-align: left; }
+    .d-card ul li::before { content: '—  '; color: var(--gold); }
+
+    /* ── REGISTRY ── */
+    #presentes { background: var(--cream); padding: 100px 40px; }
+    .presentes-inner { max-width: 1100px; margin: 0 auto; }
+    .presentes-hdr { text-align: center; margin-bottom: 48px; }
+    .presentes-hdr h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem,4.5vw,3.4rem); font-weight: 400; color: var(--brown); margin-bottom: 12px;
+    }
+    .presentes-hdr p {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 1.1rem; color: var(--brown-mid); max-width: 500px; margin: 0 auto 30px; line-height: 1.7;
+    }
+    .pix-banner {
+      display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap;
+      padding: 18px 24px; background: var(--offwhite); border: 1px solid var(--border);
+      margin-bottom: 44px;
+    }
+    .qs-label { font-size: .63rem; letter-spacing: .16em; text-transform: uppercase; color: var(--brown-lt); font-weight: 500; }
+    .qs-btn {
+      display: flex; align-items: center; gap: 7px; padding: 9px 18px;
+      border: 1px solid var(--border); background: white; cursor: pointer;
+      font-size: .74rem; font-weight: 500; color: var(--brown);
+      transition: all .3s; font-family: 'Inter', sans-serif; border-radius: 2px;
+    }
+    .qs-btn:hover { background: var(--brown); color: white; border-color: var(--brown); }
+    .qs-btn svg { width: 14px; height: 14px; }
+
+    /* Product grid */
+    .products-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 12px; }
+    .product-card {
+      background: var(--offwhite); border: 1px solid var(--border);
+      cursor: pointer; overflow: hidden; border-radius: 2px; position: relative;
+      transition: box-shadow .3s;
+    }
+    .product-card:not(.purchased):hover { box-shadow: 0 6px 30px rgba(44,24,16,.1); }
+    .product-card.purchased { cursor: default; }
+
+    .p-img-wrap {
+      aspect-ratio: 1; overflow: hidden; background: var(--cream-dk);
+      display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .p-img-wrap img.p-real-img { object-fit: cover; width: 100%; height: 100%; display: block; }
+    .p-icon { font-size: 2.6rem; user-select: none; display: none; }
+    .p-hover-overlay {
+      position: absolute; inset: 0; background: rgba(44,24,16,.42);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity .3s;
+    }
+    .product-card:not(.purchased):hover .p-hover-overlay { opacity: 1; }
+    .p-hover-overlay span {
+      color: white; font-size: .63rem; letter-spacing: .22em; text-transform: uppercase;
+      font-weight: 500; border: 1px solid rgba(255,255,255,.6); padding: 7px 14px;
+    }
+
+    /* Purchased state */
+    .purchased-overlay {
+      position: absolute; inset: 0; background: rgba(245,241,235,.9);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity .4s; pointer-events: none;
+    }
+    .product-card.purchased .purchased-overlay { opacity: 1; }
+    .p-check { font-size: 1.5rem; color: var(--gold); margin-bottom: 4px; }
+    .p-sold  { font-size: .6rem; letter-spacing: .18em; text-transform: uppercase; color: var(--brown-mid); font-weight: 500; }
+
+    .p-info  { padding: 12px 14px 16px; }
+    .p-name  { font-family: 'Cormorant Garamond', serif; font-size: .98rem; font-weight: 500; color: var(--brown); margin-bottom: 3px; line-height: 1.3; }
+    .p-price { font-size: .75rem; color: var(--brown-lt); }
+
+    /* Honeymoon fund */
+    .honey-fund {
+      background: var(--brown); color: white; padding: 56px 44px;
+      text-align: center; border-radius: 2px; margin-top: 12px;
+    }
+    .honey-fund .section-label { color: var(--gold-lt); }
+    .honey-fund h3 { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.6rem,3vw,2.4rem); font-weight: 400; margin-bottom: 10px; }
+    .honey-fund p  { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.05rem; color: rgba(255,255,255,.66); max-width: 460px; margin: 0 auto 24px; line-height: 1.7; }
+    .h-amounts { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .h-amt {
+      padding: 9px 20px; border: 1px solid rgba(255,255,255,.28); background: transparent; color: white;
+      font-size: .75rem; cursor: pointer; letter-spacing: .07em; transition: all .3s; font-family: 'Inter', sans-serif; border-radius: 2px;
+    }
+    .h-amt:hover, .h-amt.sel { background: white; color: var(--brown); border-color: white; }
+    .h-pay-btn {
+      display: inline-flex; align-items: center; gap: 7px; padding: 12px 26px;
+      border: 1px solid rgba(255,255,255,.4); background: transparent; color: white;
+      font-size: .64rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase;
+      cursor: pointer; transition: all .3s; font-family: 'Inter', sans-serif; border-radius: 2px;
+    }
+    .h-pay-btn:hover { background: white; color: var(--brown); border-color: white; }
+
+    /* ── CLOSING ── */
+    #encerramento {
+      position: relative; min-height: 78vh; display: flex;
+      align-items: center; justify-content: center; text-align: center; overflow: hidden;
+      background: var(--brown);
+    }
+    #encerramento::before {
+      content: ''; position: absolute; inset: 0;
+      background: url('../../../Eric+Olivia/38-IMG_1226.jpg') center/cover; opacity: .14;
+    }
+    .enc-content { position: relative; z-index: 1; padding: 80px 40px; max-width: 660px; }
+    .enc-content .section-label { color: var(--gold-lt); margin-bottom: 18px; }
+    .enc-content h2 {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: clamp(2.5rem,6vw,5rem); font-weight: 300; color: white;
+      line-height: 1.15; margin-bottom: 22px;
+    }
+    .enc-content p { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.08rem; line-height: 1.9; color: rgba(255,255,255,.66); margin-bottom: 26px; }
+    .enc-sig { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; color: var(--gold-lt); }
+
+    /* ── FOOTER ── */
+    footer { background: #1a0f0a; color: rgba(255,255,255,.36); text-align: center; padding: 34px 40px; }
+    footer .ft-names { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1rem; color: rgba(255,255,255,.52); letter-spacing: .14em; margin-bottom: 7px; }
+    footer p { font-size: .66rem; letter-spacing: .1em; }
+
+    /* ── PIX MODAL ── */
+    .modal-bd {
+      display: none; position: fixed; inset: 0;
+      background: rgba(44,24,16,.6); backdrop-filter: blur(4px);
+      z-index: 2000; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-bd.open { display: flex; }
+    .modal-card {
+      background: white; max-width: 430px; width: 100%; border-radius: 2px;
+      overflow: hidden; max-height: 92vh; overflow-y: auto;
+      animation: m-in .28s ease;
+    }
+    @keyframes m-in {
+      from { opacity: 0; transform: translateY(18px) scale(.97); }
+      to   { opacity: 1; transform: none; }
+    }
+    .m-hdr { background: var(--brown); color: white; padding: 22px 26px 18px; position: relative; }
+    .m-hdr h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 400; margin-bottom: 3px; }
+    .m-hdr p  { font-size: .72rem; color: rgba(255,255,255,.5); }
+    .m-close  {
+      position: absolute; top: 16px; right: 16px; width: 28px; height: 28px;
+      background: rgba(255,255,255,.1); border: none; border-radius: 50%;
+      cursor: pointer; color: white; font-size: .95rem;
+      display: flex; align-items: center; justify-content: center; transition: background .3s;
+    }
+    .m-close:hover { background: rgba(255,255,255,.2); }
+    .m-body { padding: 24px; }
+    .m-amount { text-align: center; margin-bottom: 20px; }
+    .m-amount-lbl { font-size: .6rem; letter-spacing: .22em; text-transform: uppercase; color: var(--brown-lt); margin-bottom: 4px; }
+    .m-amount-val { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 400; color: var(--brown); }
+    .m-qr { background: var(--cream); border: 1px solid var(--border); padding: 18px; text-align: center; margin-bottom: 16px; }
+    .m-qr img { width: 158px; height: 158px; margin: 0 auto 10px; border: 3px solid white; box-shadow: 0 2px 10px rgba(0,0,0,.08); object-fit: contain; }
+    .m-qr-note { font-size: .7rem; color: var(--brown-mid); line-height: 1.5; }
+    .pix-row { display: flex; gap: 8px; margin-bottom: 14px; }
+    .pix-box { flex: 1; background: var(--cream); border: 1px solid var(--border); padding: 10px 12px; font-size: .75rem; color: var(--brown); font-family: 'Inter', sans-serif; word-break: break-all; }
+    .pix-copy {
+      padding: 10px 13px; background: var(--brown); border: none; cursor: pointer;
+      color: white; font-size: .66rem; letter-spacing: .12em; text-transform: uppercase;
+      font-weight: 500; transition: background .3s; white-space: nowrap; font-family: 'Inter', sans-serif;
+    }
+    .pix-copy:hover { background: var(--brown-mid); }
+    .pix-copy.copied { background: #2D7D4F; }
+    .m-instr { background: #FFF9F2; border-left: 3px solid var(--gold); padding: 10px 13px; margin-bottom: 14px; }
+    .m-instr p { font-size: .74rem; line-height: 1.6; color: var(--brown-mid); }
+    .m-instr strong { color: var(--brown); }
+    .m-confirm {
+      width: 100%; padding: 12px; background: var(--brown); border: none;
+      color: white; font-size: .66rem; letter-spacing: .18em; text-transform: uppercase;
+      font-weight: 500; cursor: pointer; transition: background .3s; font-family: 'Inter', sans-serif;
+    }
+    .m-confirm:hover { background: var(--brown-mid); }
+
+    /* ── LIGHTBOX ── */
+    #lightbox {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.88); backdrop-filter: blur(8px);
+      z-index: 3000; align-items: center; justify-content: center; padding: 24px;
+      cursor: zoom-out;
+    }
+    #lightbox.open { display: flex; }
+    #lightbox img {
+      max-width: 88vw; max-height: 88vh; object-fit: contain;
+      width: auto; height: auto; border-radius: 4px;
+      box-shadow: 0 24px 80px rgba(0,0,0,.5); animation: m-in .25s ease;
+    }
+    .lb-close {
+      position: fixed; top: 22px; right: 26px; width: 38px; height: 38px;
+      background: rgba(255,255,255,.14); border: none; border-radius: 50%;
+      cursor: pointer; color: white; font-size: 1.1rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1000px) {
+      .products-grid { grid-template-columns: repeat(3,1fr); }
+    }
+    @media (max-width: 860px) {
+      .story-sticky { grid-template-columns: 1fr; grid-template-rows: auto auto auto; height: auto; min-height: 100vh; }
+      .ch-text-panel { height: auto; min-height: 30vh; }
+      .ch-text-layer { position: relative; inset: auto; padding: 20px 28px !important; text-align: center; }
+      .ch-photo-panel { padding: 0 32px 20px; }
+      .photo-stack-wrap { width: clamp(200px,55vw,280px); height: clamp(250px,69vw,350px); }
+      .d-cards { grid-template-columns: 1fr; max-width: 480px; }
+    }
+    @media (max-width: 768px) {
+      #navbar { padding: 0 20px; }
+      .nav-links, .nav-rsvp { display: none; }
+      .nav-toggle { display: block; }
+      .sp1,.sp2,.sp3,.sp4 { width: clamp(76px,15vw,110px); border-radius: 6px; }
+      .products-grid { grid-template-columns: repeat(2,1fr); }
+      #detalhes, #presentes, #rsvp-venue { padding: 72px 24px; }
+      .rsvp-box { padding: 32px 22px; }
+    }
+    @media (max-width: 480px) {
+      .countdown { gap: 0; }
+      .cd-unit { padding: 0 14px; }
+      .cd-colon { font-size: 2.8rem; }
+      .products-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════ NAVIGATION ════════════ -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <div class="nav-logo">O &amp; E</div>
+    <ul class="nav-links">
+      <li><a href="#historia">Nossa História</a></li>
+      <li><a href="#rsvp-venue">Celebração</a></li>
+      <li><a href="#detalhes">Detalhes</a></li>
+      <li><a href="#presentes">Presentes</a></li>
+    </ul>
+    <a href="#rsvp-venue" class="nav-rsvp">RSVP</a>
+    <button class="nav-toggle" onclick="openMobileMenu()" aria-label="Menu">
+      <svg width="22" height="15" viewBox="0 0 22 15" fill="none" stroke="currentColor" stroke-width="1.5">
+        <line x1="0" y1="1.5" x2="22" y2="1.5"/>
+        <line x1="0" y1="7.5" x2="22" y2="7.5"/>
+        <line x1="0" y1="13.5" x2="22" y2="13.5"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<div class="nav-mobile" id="mobileMenu">
+  <button class="nmclose" onclick="closeMobileMenu()">×</button>
+  <a href="#historia"   onclick="closeMobileMenu()">Nossa História</a>
+  <a href="#rsvp-venue" onclick="closeMobileMenu()">Celebração</a>
+  <a href="#detalhes"   onclick="closeMobileMenu()">Detalhes</a>
+  <a href="#presentes"  onclick="closeMobileMenu()">Presentes</a>
+</div>
+
+
+<!-- ════════════ HERO SCROLL (300vh) ════════════ -->
+<div id="heroScroll">
+  <div id="heroSticky">
+
+    <!-- Main photo: full-screen → clips to portrait on scroll -->
+    <div id="heroMainWrap">
+      <img src="./Eric+Olivia/57-IMG_1357.jpg" alt="Olivia e Eric">
+      <div id="heroInnerOverlay"></div>
+    </div>
+
+    <!-- Left surrounding photos: slide in from left -->
+    <div class="sp-wrap sp1" data-side="left">
+      <img src="./surrounding/engagement.jpg" alt="Noivado">
+    </div>
+    <div class="sp-wrap sp2" data-side="left">
+      <img src="./surrounding/brazil.jpg" alt="Brasil">
+    </div>
+
+    <!-- Right surrounding photos: slide in from right -->
+    <div class="sp-wrap sp3" data-side="right">
+      <img src="./surrounding/vermont.jpg" alt="Vermont">
+    </div>
+    <div class="sp-wrap sp4" data-side="right">
+      <img src="./surrounding/stowe.jpg" alt="Stowe">
+    </div>
+
+    <!-- Names + line at bottom of photo -->
+    <div id="heroBottom">
+      <h1 id="heroTitle">Olivia &amp; Eric</h1>
+      <div id="heroLine"></div>
+    </div>
+
+    <!-- Scroll cue bottom-right -->
+    <div class="hero-scroll-cue" id="scrollCue">
+      <span>Rolar para explorar</span>
+      <svg viewBox="0 0 28 10" fill="none" stroke="currentColor" stroke-width="1.4">
+        <line x1="0" y1="5" x2="22" y2="5"/>
+        <path d="M18 1l5 4-5 4"/>
+      </svg>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ════════════ CORDIALLY INVITED ════════════ -->
+<section id="invited">
+  <div class="invited-inner">
+    <p class="inv-sentence">você está cordialmente convidado<span class="inv-fade"> a celebrar...</span></p>
+  </div>
+</section>
+
+
+<!-- ════════════ OUR STORY ════════════ -->
+<section id="historia">
+
+  <!-- "nossa história" heading stays pinned at top of viewport throughout story scroll -->
+  <div class="story-header-sticky">
+    <h2>nossa história</h2>
+  </div>
+
+  <!-- Single tall scroll container — one photo stack, all 8 photos -->
+  <div class="story-scroll" id="storyScroll">
+    <div class="story-sticky">
+
+      <!-- LEFT text column: Ch1 + Ch3 (ch2 is on the right) -->
+      <div class="ch-text-panel ch-text-left">
+
+        <div class="ch-text-layer" id="chText0">
+          <span class="ch-num-label">Capítulo 01</span>
+          <h3 class="ch-title-lg">O Encontro</h3>
+          <p class="ch-body-text">Nos conhecemos em um aplicativo e nos conectamos imediatamente. O que começou como uma simples conversa se transformou em nosso primeiro encontro, e muitos outros depois. Desde o início, estar juntos sempre pareceu natural e fácil.</p>
+        </div>
+
+        <div class="ch-text-layer" id="chText2">
+          <span class="ch-num-label">Capítulo 03</span>
+          <h3 class="ch-title-lg">O Pedido</h3>
+          <p class="ch-body-text">Durante nossa viagem de Natal ao Brasil, ele pediu em casamento. Foi um momento tão especial e o sim mais fácil da minha vida. Agora estamos animados para este próximo capítulo juntos.</p>
+        </div>
+
+      </div>
+
+      <!-- CENTER photo stack: all 8 photos slide up in sequence -->
+      <div class="ch-photo-panel">
+        <div class="photo-stack-wrap" id="singleStack">
+
+          <div class="stack-photo" data-src="./our_story/1-hiking_to_stewart_falls.jpeg" onclick="openLightbox(this)">
+            <img src="./our_story/1-hiking_to_stewart_falls.jpeg" alt="Trilha em Stewart Falls" onerror="this.parentElement.style.background='var(--cream-dk)';this.style.display='none'">
+            <span class="sp-caption">Trilha em Stewart Falls</span>
+          </div>
+
+          <div class="stack-photo" data-src="./our_story/2-newyears.jpeg" onclick="openLightbox(this)">
+            <img src="./our_story/2-newyears.jpeg" alt="Réveillon juntos" onerror="this.parentElement.style.background='var(--cream-dk)';this.style.display='none'">
+            <span class="sp-caption">Réveillon juntos</span>
+          </div>
+
+          <div class="stack-photo" data-src="./our_story/3-building_snowforts_together.jpeg" onclick="openLightbox(this)">
+            <img src="./our_story/3-building_snowforts_together.jpeg" alt="Construindo fortes de neve" onerror="this.parentElement.style.background='var(--cream-dk)';this.style.display='none'">
+            <span class="sp-caption">Construindo fortes de neve</span>
+          </div>
+
+          <div class="stack-photo" data-src="./our_story/4-attending_general_conference.jpeg" onclick="openLightbox(this)">
+            <img src="./our_story/4-attending_general_conference.jpeg" alt="Conferência Geral" onerror="this.parentElement.style.background='var(--cream-dk)';this.style.display='none'">
+            <span class="sp-caption">Conferência Geral</span>
+          </div>
+
+          <div class="stack-photo" data-src="./our_story/5-skiing_together.jpeg" onclick="openLightbox(this)">
+            <img src="./our_story/5-skiing_together.jpeg" alt="Esquiando juntos" onerror="this.parentElement.style.background='var(--cream-dk)';this.style.display='none'">
+            <span class="sp-caption">Esquiando juntos</span>
+          </div>
+
+          <div class="stack-photo" data-src="./our_story/6-disney.jpeg" onclick="openLightbox(this)">
+            <img src="./our_story/6-disney.jpeg" alt="Disney" onerror="this.parentElement.style.background='var(--cream-dk)';this.style.display='none'">
+            <span class="sp-caption">Disney</span>
+          </div>
+
+          <div class="stack-photo" data-src="./our_story/7-engaged.jpeg" onclick="openLightbox(this)">
+            <img src="./our_story/7-engaged.jpeg" alt="Noivamos!" onerror="this.parentElement.style.background='var(--cream-dk)';this.style.display='none'">
+            <span class="sp-caption">Noivamos!</span>
+          </div>
+
+          <div class="stack-photo" data-src="./our_story/8-trip_to_brazil.jpeg" onclick="openLightbox(this)">
+            <img src="./our_story/8-trip_to_brazil.jpeg" alt="Viagem ao Brasil" onerror="this.parentElement.style.background='var(--cream-dk)';this.style.display='none'">
+            <span class="sp-caption">Viagem ao Brasil</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- RIGHT text column: Ch2 only -->
+      <div class="ch-text-panel ch-text-right">
+
+        <div class="ch-text-layer" id="chText1">
+          <span class="ch-num-label">Capítulo 02</span>
+          <h3 class="ch-title-lg">Nossa Vida Cotidiana</h3>
+          <p class="ch-body-text">Com o tempo, passamos a fazer tudo juntos. De assistir filmes e estudar a cozinhar, treinar, pintar e encontrar pequenas aventuras — rapidamente nos tornamos melhores amigos. Mesmo os momentos mais simples se tornavam especiais quando estávamos juntos.</p>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ════════════ COUNTDOWN (sticky scroll) ════════════ -->
+<div class="countdown-scroll">
+<section id="countdown-section">
+  <div class="countdown-inner">
+    <span class="cnt-pre">então, por favor venha nos ver</span>
+    <div class="cnt-date">22 de agosto de 2026</div>
+    <div class="countdown">
+      <div class="cd-unit"><span class="cd-num" id="cd-days">—</span><span class="cd-lbl">Dias</span></div>
+      <span class="cd-colon">:</span>
+      <div class="cd-unit"><span class="cd-num" id="cd-hours">—</span><span class="cd-lbl">Horas</span></div>
+      <span class="cd-colon">:</span>
+      <div class="cd-unit"><span class="cd-num" id="cd-mins">—</span><span class="cd-lbl">Minutos</span></div>
+      <span class="cd-colon">:</span>
+      <div class="cd-unit"><span class="cd-num" id="cd-secs">—</span><span class="cd-lbl">Segundos</span></div>
+    </div>
+  </div>
+</section>
+</div><!-- /.countdown-scroll -->
+
+
+<!-- ════════════ RSVP + VENUE ════════════ -->
+<section id="rsvp-venue">
+  <div class="rv-inner">
+
+    <div class="venue-photo-wrap">
+      <img src="airbnb.png" alt="Local da celebração">
+    </div>
+
+    <div class="venue-info">
+      <h3>Rua Dom Juaquim, 340</h3>
+      <p>Cotia, São Paulo — CEP 06709-020 &nbsp;·&nbsp; Sábado, 22 de agosto de 2026 às 16h</p>
+    </div>
+
+    <div class="rsvp-box">
+      <h3>Confirme sua Presença</h3>
+      <form class="rsvp-form" id="rsvpForm" onsubmit="handleRsvp(event)"
+        action="https://formspree.io/f/xeenlryn" method="POST">
+        <input type="hidden" name="_subject" value="RSVP — Casamento Olivia & Eric">
+        <input type="hidden" name="tipo" value="rsvp">
+        <div class="form-field">
+          <label>Nome completo</label>
+          <input type="text" name="nome" placeholder="Seu nome" required>
+        </div>
+        <div class="form-field">
+          <label>E-mail</label>
+          <input type="email" name="email" placeholder="seu@email.com" required>
+        </div>
+        <div class="form-field">
+          <label>Número de convidados</label>
+          <input type="number" name="convidados" placeholder="Ex: 2" min="1" max="20" required>
+        </div>
+        <div class="form-field">
+          <label>Restrições alimentares ou observações</label>
+          <textarea name="observacoes" placeholder="Ex: vegetariano, alergias..."></textarea>
+        </div>
+        <button type="submit" class="rsvp-submit">Confirmar Presença</button>
+      </form>
+      <div class="rsvp-thanks" id="rsvpThanks">
+        <div class="ti">✦</div>
+        <h4>Presença confirmada!</h4>
+        <p>Que alegria! Estamos ansiosos para celebrar com você.<br>Até 22 de agosto!</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ════════════ ADDITIONAL DETAILS ════════════ -->
+<section id="detalhes">
+  <div class="section-inner">
+    <div class="section-hdr">
+      <span class="section-label">Informações Práticas</span>
+      <h2 class="section-heading" style="font-size:clamp(2rem,4vw,3rem)">Detalhes Adicionais</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="d-cards">
+
+      <div class="d-card">
+        <svg class="d-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.3">
+          <circle cx="18" cy="14" r="6"/><path d="M18 36C18 36 6 24 6 14A12 12 0 0 1 30 14C30 24 18 36 18 36Z"/>
+        </svg>
+        <h3>Logística de Viagem</h3>
+        <ul>
+          <li>Cotia, SP — cerca de 40 km do centro de São Paulo</li>
+          <li>De carro: Rodovia Raposo Tavares (SP-270), saída Cotia</li>
+          <li>Por aplicativo: Uber e 99 disponíveis na região</li>
+          <li>Estacionamento gratuito na rua — não estacione na entrada da propriedade</li>
+          <li>Endereço: Rua Dom Juaquim, 340 — CEP 06709-020</li>
+        </ul>
+      </div>
+
+      <div class="d-card">
+        <svg class="d-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.3">
+          <path d="M12 4L6 10l4 4v14h16V14l4-4-6-6"/><path d="M12 4c0 0 2 6 6 6s6-6 6-6"/>
+        </svg>
+        <h3>Traje</h3>
+        <p style="margin-bottom:13px"><strong>Esporte Fino / Traje Passeio Completo</strong></p>
+        <ul>
+          <li>Homens: terno e gravata ou esporte fino</li>
+          <li>Mulheres: vestido longo ou midi, conjunto elegante</li>
+          <li>Paleta de cores: tons pastéis de primavera</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════ REGISTRY ════════════ -->
+<section id="presentes">
+  <div class="presentes-inner">
+
+    <div class="presentes-hdr">
+      <span class="section-label">Lista de Presentes</span>
+      <h2>Nossos Presentes</h2>
+      <p>Cada presente é um pedacinho do nosso lar. Clique para presentear via PIX.</p>
+      <div class="pix-banner">
+        <span class="qs-label">Contribuição direta:</span>
+        <button class="qs-btn" onclick="openPixDirect()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 2l2.83 7.17L22 12l-7.17 2.83L12 22l-2.83-7.17L2 12l7.17-2.83L12 2Z"/>
+          </svg>
+          PIX — Contribuição Livre
+        </button>
+      </div>
+    </div>
+
+    <div class="products-grid" id="productsGrid"></div>
+
+    <div class="honey-fund">
+      <span class="section-label">Contribuição Especial</span>
+      <h3>Ajuda para Lua de Mel</h3>
+      <p>Nos ajude a criar memórias inesquecíveis na nossa primeira aventura como casal casado.</p>
+      <div class="h-amounts">
+        <button class="h-amt" data-value="100" onclick="selHoney(this)">R$ 100</button>
+        <button class="h-amt sel" data-value="200" onclick="selHoney(this)">R$ 200</button>
+        <button class="h-amt" data-value="300" onclick="selHoney(this)">R$ 300</button>
+        <button class="h-amt" data-value="500" onclick="selHoney(this)">R$ 500</button>
+      </div>
+      <button class="h-pay-btn" onclick="openHPix()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 2l2.83 7.17L22 12l-7.17 2.83L12 22l-2.83-7.17L2 12l7.17-2.83L12 2Z"/>
+        </svg>
+        Contribuir via PIX
+      </button>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ════════════ CLOSING ════════════ -->
+<section id="encerramento">
+  <div class="enc-content">
+    <span class="section-label">Até Lá</span>
+    <h2>Não vemos a hora de te ver!</h2>
+    <p>Sua presença é o maior presente que poderíamos receber. Estamos contando os dias para celebrar esse momento tão especial ao lado de quem amamos.</p>
+    <p class="enc-sig">— Olivia &amp; Eric</p>
+  </div>
+</section>
+
+
+<!-- ════════════ FOOTER ════════════ -->
+<footer>
+  <p class="ft-names">Olivia &amp; Eric</p>
+  <p>22 de agosto de 2026 &nbsp;·&nbsp; Cotia, São Paulo</p>
+</footer>
+
+
+<!-- ════════════ PIX MODAL ════════════ -->
+<div class="modal-bd" id="pixModal">
+  <div class="modal-card">
+    <div class="m-hdr">
+      <h3 id="pmTitle">Presente</h3>
+      <p  id="pmSub">Pagamento via PIX</p>
+      <button class="m-close" onclick="closeModal('pixModal')">×</button>
+    </div>
+    <div class="m-body">
+      <div class="m-amount">
+        <p class="m-amount-lbl">Valor a transferir</p>
+        <p class="m-amount-val" id="pmAmt">—</p>
+      </div>
+      <div class="m-qr">
+        <img id="pmQr" src="" alt="QR Code PIX">
+        <p class="m-qr-note">Escaneie no app do banco ou copie a chave PIX abaixo</p>
+      </div>
+      <div class="pix-row">
+        <div class="pix-box" id="pmKey"></div>
+        <button class="pix-copy" id="pmCopyBtn" onclick="copyPix()">Copiar</button>
+      </div>
+      <div class="m-instr">
+        <p><strong>Como pagar:</strong> abra o app do banco → PIX → cola a chave → confirme <strong id="pmInstr"></strong> → envie!</p>
+      </div>
+      <button class="m-confirm" id="pmConfirmBtn" onclick="confirmPayment()">Já realizei o pagamento ✓</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════ LIGHTBOX ════════════ -->
+<div id="lightbox" onclick="closeLightbox()">
+  <button class="lb-close" onclick="closeLightbox()">×</button>
+  <img id="lbImg" src="" alt="">
+</div>
+
+
+<!-- ════════════ FIREBASE (cross-device purchase sync) ════════════ -->
+<!-- Setup: console.firebase.google.com → New project → Build → Realtime Database
+     → Start in test mode → copy your config values below                      -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<!-- ════════════ SCRIPTS ════════════ -->
+<script>
+
+/* ─────────────────────────────────────────
+   CONFIG
+───────────────────────────────────────── */
+const CFG = {
+  pixKey:      '11980595860',
+  formspreeUrl:'https://formspree.io/f/xeenlryn',
+};
+
+/* ─────────────────────────────────────────
+   FIREBASE — cross-device purchase sync
+   Fill in your project config below:
+   console.firebase.google.com → your project
+   → Project settings → Your apps → Config
+───────────────────────────────────────── */
+
+const API_KEY = process.env.API_KEY;
+
+const FIREBASE_CFG = {
+  apiKey:            API_KEY,
+  authDomain:        "wedding-venue-b6b30.firebaseapp.com",
+  databaseURL:       "https://wedding-venue-b6b30-default-rtdb.firebaseio.com",
+  projectId:         "wedding-venue-b6b30",
+  storageBucket:     "wedding-venue-b6b30.firebasestorage.app",
+  messagingSenderId: "136643137204",
+  appId:             "1:136643137204:web:dea4d5ac22cbe6c1f091e1",
+};
+let _db = null;
+try {
+  if (FIREBASE_CFG.apiKey !== 'FILL_IN') {
+    firebase.initializeApp(FIREBASE_CFG);
+    _db = firebase.database();
+  }
+} catch(e) { console.warn('Firebase not configured — purchase sync is local only'); }
+
+/* ─────────────────────────────────────────
+   MATH HELPERS
+───────────────────────────────────────── */
+const clamp   = (v,lo,hi) => Math.max(lo, Math.min(hi, v));
+const lerp    = (a,b,t)   => a + (b-a)*clamp(t,0,1);
+const easeOut = t => { t=clamp(t,0,1); return 1-Math.pow(1-t,3); };
+
+/* ─────────────────────────────────────────
+   HERO ANIMATION
+───────────────────────────────────────── */
+const heroScroll   = document.getElementById('heroScroll');
+const heroMainWrap = document.getElementById('heroMainWrap');
+const heroMainImg  = heroMainWrap.querySelector('img');
+const heroInnerOv  = document.getElementById('heroInnerOverlay');
+const scrollCue    = document.getElementById('scrollCue');
+const sideWraps    = document.querySelectorAll('.sp-wrap');
+
+let heroTop=0, heroH=0, winH=window.innerHeight, winW=window.innerWidth;
+
+/* Couple's position as fraction of natural image width (5616×3744).
+   Calibrated so that objectPosition 42% centres them at a 519px-wide viewport. */
+const COUPLE_NX   = 0.449;
+const IMG_NAT_W   = 5616;
+const IMG_NAT_H   = 3744;
+
+/* X-centre of the portrait clip — always winW/2 so the whole collage stays centred. */
+let portraitCenterX = 0;
+/* Px to translateX the image so the couple appears at portrait centre.
+   The growing clip always hides any resulting edge gap, so no background shows. */
+let coupleShiftPx   = 0;
+
+function measureHero() {
+  heroTop = heroScroll.offsetTop;
+  heroH   = heroScroll.offsetHeight;
+  winH    = window.innerHeight;
+  winW    = window.innerWidth;
+
+  /* Collage is always centred — portrait clip sits at viewport centre. */
+  portraitCenterX = winW / 2;
+
+  const sc   = Math.max(winW / IMG_NAT_W, winH / IMG_NAT_H);
+  const rndW = IMG_NAT_W * sc;
+
+  if (rndW > winW + 1) {
+    /* Height-determined: horizontal overflow → objectPosition X shifts image.
+       Compute exact X so couple lands at viewport centre. No translateX needed. */
+    const coupleRenderedX = COUPLE_NX * rndW;
+    const offsetX = coupleRenderedX - winW / 2;
+    const objX = Math.min(100, Math.max(0, offsetX / (rndW - winW) * 100));
+    heroMainImg.style.objectPosition = `${objX.toFixed(1)}% 40%`;
+    coupleShiftPx = 0;
+  } else {
+    /* Width-determined: objectPosition X has no effect (image fills container exactly).
+       Instead, translateX the image as the portrait clip grows — the clip always covers
+       the resulting edge gap (clipEdgePx ≫ coupleShiftPx), so no background ever shows. */
+    heroMainImg.style.objectPosition = '50% 40%';
+    coupleShiftPx = winW * (0.5 - COUPLE_NX); /* positive = shift image right */
+  }
+
+  layoutSidePhotos();
+}
+
+/* Compute and apply collage photo positions relative to the center clip.
+   Re-runs on every resize so gaps stay tight on any screen width. */
+function layoutSidePhotos() {
+  const eW = heroMainWrap.offsetWidth || winW;
+  const eH = heroMainWrap.offsetHeight || winH;
+
+  const portraitW = Math.max(eW * 0.19, 180);
+  const cL = Math.round((eW - portraitW) / 2);
+  const cR = Math.round((eW + portraitW) / 2);
+  const cT = Math.round(eH * 0.26);
+  const cB = Math.round(eH * 0.80);
+
+  const GAP = 24;
+
+  const avail = Math.min(cL, eW - cR) - GAP;
+
+  const lgW = Math.min(Math.round(avail * 0.72), 500);
+  const lgH = Math.round(lgW / 1.75);
+
+  const smW = Math.min(Math.round(avail * 0.55), 390);
+  const smHL = Math.round(smW / 2.35);
+  const smHR = Math.round(smW / 2.35);
+
+  
+  const V_OFFSET = 42;
+
+  /* Left cluster sits higher */
+  const sp1L = cL - GAP - lgW;
+  const sp1T = cT - V_OFFSET;
+
+  const sp2L = cL - GAP - smW;
+  const sp2T = sp1T + lgH + GAP;
+
+  /* Right cluster sits equally lower */
+  const sp3L = cR + GAP;
+  const sp3T = cT + V_OFFSET;
+
+  const sp4L = cR + GAP;
+  const sp4T = sp3T + smHR + GAP;
+
+  const applyLayout = (el, l, t, w, h) => {
+    if (!el) return;
+    el.style.left = `${Math.round(l)}px`;
+    el.style.top = `${Math.round(t)}px`;
+    el.style.width = `${Math.round(w)}px`;
+    el.style.height = `${Math.round(h)}px`;
+  };
+
+  const [s1, s2, s3, s4] = [...sideWraps];
+
+  applyLayout(s1, sp1L, sp1T, lgW, lgH);
+  applyLayout(s2, sp2L, sp2T, smW, smHL);
+  applyLayout(s3, sp3L, sp3T, smW, smHR);
+  applyLayout(s4, sp4L, sp4T, lgW, lgH);
+}
+
+const heroBottomEl = document.getElementById('heroBottom');
+
+function animateHero() {
+  const si    = window.scrollY - heroTop;
+  const total = heroH - winH;
+  if (total <= 0) return;
+  const p = clamp(si / total, 0, 1);
+
+  /* Scroll cue fades out quickly */
+  scrollCue.style.opacity = clamp(1 - p / 0.08, 0, 1);
+
+  /* ─ Main photo: clips from full-screen → portrait, AND shrinks vertically ─ */
+  const scP = clamp(p / 0.70, 0, 1);
+  const e   = easeOut(scP);
+
+  /* Symmetric horizontal clip — collage is always centred on the viewport. */
+  const portraitW = Math.max(winW * 0.19, 180);
+  const sideInset = Math.max(0, (winW - portraitW) / 2 / winW * 100);
+  const clipSide  = lerp(0, sideInset, e);
+
+  /* Vertical clip — 26 % from top, 20 % from bottom */
+  const clipTop = lerp(0, 26, e);
+  const clipBot = lerp(0, 20, e);
+
+  heroMainWrap.style.clipPath =
+    `inset(${clipTop.toFixed(2)}% ${clipSide.toFixed(2)}% ${clipBot.toFixed(2)}% round 18px)`;
+
+  /* Image: zoom out 1.06→1.0 AND drift so the couple centres in the portrait.
+     coupleShiftPx is set in measureHero(); the growing clip always hides any edge gap. */
+  const shiftX = lerp(0, coupleShiftPx, e);
+  heroMainImg.style.transform =
+    `translateX(${shiftX.toFixed(1)}px) scale(${lerp(1.06, 1.0, e).toFixed(4)})`;
+
+  /* ─ Bottom gradient overlay fades out ─ */
+  heroInnerOv.style.opacity = lerp(1, 0, easeOut(clamp(p / 0.35, 0, 1)));
+
+  /* ─ Names + line fade out early ─ */
+  if (heroBottomEl) heroBottomEl.style.opacity = lerp(1, 0, easeOut(clamp(p / 0.25, 0, 1)));
+
+  /* ─ Side photos — diagonal entry: left from lower-left → up-right, right from lower-right → up-left ─ */
+  sideWraps.forEach((sp, i) => {
+    const isLeft = sp.dataset.side === 'left';
+    const delay  = (i % 2) * 0.09;
+    const sP     = clamp((p - 0.26 - delay) / 0.48, 0, 1);
+    const ease   = easeOut(sP);
+    /* left: starts far left + below; right: far right + below */
+    const startX = (isLeft ? -1 : 1) * winW * 0.38;
+    const startY = winH * 0.32;
+    sp.style.opacity   = String(ease);
+    sp.style.transform =
+      `translate(${lerp(startX, 0, ease).toFixed(1)}px, ${lerp(startY, 0, ease).toFixed(1)}px)`;
+  });
+}
+
+/* ─────────────────────────────────────────
+   STORY — SINGLE PHOTO STACK + CHAPTER TEXT
+   8 photos total; 3 chapter text layers fade
+   ch1: photos 0-2  ch2: photos 3-5  ch3: photos 6-7
+───────────────────────────────────────── */
+const STORY_ROTS = [-2.5, 2.2, -2.8, 2.6, -2.4, 2.9, -2.7, 2.3];
+
+const STORY_OX = [-18, 14, -12, 18, -14, 16, -20, 15];
+
+const STORY_OY = [-36, -22, -8, 10, 28, 46, 72, 96];
+
+/* Chapter 1 small/medium, Chapter 2 bigger, Chapter 3 biggest */
+const STORY_SCALES = [
+  0.82, 0.84, 0.86,
+  0.96, 0.98, 1.00,
+  1.10, 1.12
+];
+
+const STACK_STRIP = 16;
+/* p boundaries where each chapter starts/ends (fractions of story scroll) */
+const CH_STARTS = [0,   3/8, 6/8];
+const CH_ENDS   = [3/8, 6/8, 1  ];
+const CH_FADE   = 0.5/8; /* fade zone ≈ half a photo's scroll width */
+
+function animateStacks() {
+  const storyEl = document.getElementById('storyScroll');
+  if (!storyEl) return;
+
+  const rect  = storyEl.getBoundingClientRect();
+  const total = Math.max(1, storyEl.offsetHeight - winH);
+  const p     = clamp(-rect.top / total, 0, 1);
+
+  const photos = [...document.querySelectorAll('#singleStack .stack-photo')];
+  const n = photos.length;
+
+  photos.forEach((ph, i) => {
+    const step = 1 / n;
+    const threshold = i * step;
+    const nextThresh = (i + 1) * step;
+
+    const rot0 = STORY_ROTS[i] || 0;
+    const ox = STORY_OX[i] || 0;
+    const oy = STORY_OY[i] || 0;
+    const sc = STORY_SCALES[i] || 1;
+
+    const settledY = oy;
+    const stackRect = document.getElementById('singleStack').getBoundingClientRect();
+    const entryStartY = window.innerHeight - stackRect.top + 80;
+    
+    ph.style.setProperty('--settled-x', `${ox}px`);
+    ph.style.setProperty('--settled-y', `${settledY}px`);
+    ph.style.setProperty('--settled-rot', `${rot0}deg`);
+    ph.style.setProperty('--settled-scale', sc);
+
+    if (p < threshold) {
+      ph.classList.remove('in-stack');
+      ph.style.opacity = '0';
+      ph.style.transform =
+        `translateX(0px) translateY(${entryStartY}px) rotate(${rot0}deg) scale(${sc})`;
+      ph.style.zIndex = String(i + 1);
+      ph.style.pointerEvents = 'none';
+
+    } else if (p < nextThresh) {
+      ph.classList.remove('in-stack');
+
+      const lP = (p - threshold) / step;
+      const eP = easeOut(lP);
+
+      ph.style.opacity = '1';
+      ph.style.transform =
+        `translateX(${lerp(0, ox, eP).toFixed(1)}px)
+         translateY(${lerp(entryStartY, settledY, eP).toFixed(1)}px)
+         rotate(${rot0}deg)
+         scale(${sc})`;
+
+      ph.style.zIndex = String(i + 20);
+      ph.style.pointerEvents = 'auto';
+
+    } else {
+      ph.classList.add('in-stack');
+      ph.style.opacity = '1';
+      ph.style.transform =
+        `translateX(${ox}px)
+         translateY(${settledY}px)
+         rotate(${rot0}deg)
+         scale(${sc})`;
+
+      ph.style.zIndex = String(i + 1);
+      ph.style.pointerEvents = 'auto';
+    }
+  });
+
+  const texts = [
+    document.getElementById('chText0'),
+    document.getElementById('chText1'),
+    document.getElementById('chText2')
+  ];
+
+  texts.forEach((txt, i) => {
+    if (!txt) return;
+
+    const start = CH_STARTS[i];
+    const end = CH_ENDS[i];
+
+    let opacity = 1;
+
+    if (p < start + CH_FADE) {
+      opacity = clamp((p - start) / CH_FADE, 0, 1);
+    } else if (p > end - CH_FADE) {
+      opacity = clamp((end - p) / CH_FADE, 0, 1);
+    }
+
+    txt.style.opacity = opacity;
+  });
+}
+
+/* ─────────────────────────────────────────
+   COUNTDOWN
+───────────────────────────────────────── */
+function tick() {
+  const target = new Date('2026-08-22T16:00:00-03:00');
+  const diff   = target - new Date();
+  if (diff <= 0) {
+    ['cd-days','cd-hours','cd-mins','cd-secs'].forEach(id => document.getElementById(id).textContent='00');
+    return;
+  }
+  const pad = n => String(Math.floor(n)).padStart(2,'0');
+  document.getElementById('cd-days') .textContent = pad(diff/864e5);
+  document.getElementById('cd-hours').textContent = pad((diff%864e5)/36e5);
+  document.getElementById('cd-mins') .textContent = pad((diff%36e5)/6e4);
+  document.getElementById('cd-secs') .textContent = pad((diff%6e4)/1e3);
+}
+
+/* ─────────────────────────────────────────
+   REGISTRY — PRODUCTS
+───────────────────────────────────────── */
+const products = [
+  { name:'Tábua de Corte',    price:150, img:'./registry/cutting_board.jpg' },
+  { name:'Liquidificador',    price:350, img:'./registry/blender.jpg'        },
+  { name:'Panela de Pressão', price:400, img:'./registry/pressure_cooker.jpg'},
+  { name:'Aspirador de Pó',   price:510, img:'./registry/vacuum.jpg'         },
+  { name:'Airfryer',          price:350, img:'./registry/airfryer.jpg'        },
+  { name:'Tapete',            price:160, img:'./registry/rug.jpg'             },
+  { name:'Sofá',              price:550, img:'./registry/couch.jpg'           },
+  { name:'Jogo de Panelas',   price:200, img:'./registry/pans.jpg'            },
+  { name:'Torradeira',        price:120, img:'./registry/toaster.jpg'         },
+  { name:'Roupa de Cama',     price:80,  img:'./registry/bedding.jpg'         },
+  { name:'Potes',             price:180, img:'./registry/pots.jpg'            },
+  { name:'Assadeiras',        price:190, img:'./registry/assadeiras.jpg'      },
+];
+
+const fmt = v => v>0
+  ? 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2})
+  : '(Valor à sua escolha)';
+
+function getPurchased()     { return JSON.parse(localStorage.getItem('wPurchased')||'[]'); }
+function savePurchased(arr) {
+  localStorage.setItem('wPurchased', JSON.stringify(arr));
+  /* Sync to Firebase for cross-device visibility */
+  if (_db) _db.ref('purchased').set(arr).catch(()=>{});
+}
+
+function markCardPurchased(name) {
+  const card = document.querySelector(`.product-card[data-name="${CSS.escape(name)}"]`);
+  if (card && !card.classList.contains('purchased')) {
+    card.classList.add('purchased');
+    card.onclick = null;
+  }
+}
+
+function buildGrid() {
+  const g = document.getElementById('productsGrid');
+  const bought = getPurchased();
+  products.forEach(p => {
+    const done = bought.includes(p.name);
+    const c = document.createElement('div');
+    c.className = 'product-card'+(done?' purchased':'');
+    c.dataset.name  = p.name;
+    c.dataset.price = p.price;
+    if (!done) c.onclick = () => openPix(p.name, p.price, false);
+    const imgTag = p.img
+      ? `<img class="p-real-img" src="${p.img}" alt="${p.name}" onerror="this.style.display='none'">`
+      : '';
+    c.innerHTML = `
+      <div class="p-img-wrap">
+        ${imgTag}
+        <div class="p-hover-overlay"><span>Presentear</span></div>
+        <div class="purchased-overlay">
+          <div class="p-check">✓</div>
+          <div class="p-sold">Presenteado</div>
+        </div>
+      </div>
+      <div class="p-info">
+        <p class="p-name">${p.name}</p>
+        <p class="p-price">${fmt(p.price)}</p>
+      </div>`;
+    g.appendChild(c);
+  });
+
+  /* Listen for real-time updates from other devices */
+  if (_db) {
+    _db.ref('purchased').on('value', snapshot => {
+      const remote = snapshot.val() || [];
+      /* Merge remote purchased into local */
+      const local = getPurchased();
+      const merged = [...new Set([...local, ...remote])];
+      localStorage.setItem('wPurchased', JSON.stringify(merged));
+      merged.forEach(markCardPurchased);
+    });
+  }
+}
+
+/* ─────────────────────────────────────────
+   PIX MODAL
+───────────────────────────────────────── */
+let currentProduct = null;
+
+function openPix(name, amount, isHoney) {
+  currentProduct = { name, amount, isHoney };
+  const fmtAmt   = fmt(amount);
+  document.getElementById('pmTitle') .textContent = isHoney ? 'Lua de Mel' : name;
+  document.getElementById('pmSub')   .textContent = isHoney ? 'Contribuição — Lua de Mel' : name.substring(0,50);
+  document.getElementById('pmAmt')   .textContent = fmtAmt;
+  document.getElementById('pmInstr') .textContent = amount>0 ? fmtAmt : 'o valor desejado';
+  document.getElementById('pmKey')   .textContent = CFG.pixKey;
+  document.getElementById('pmQr')    .src =
+    `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(CFG.pixKey)}&color=2C1810&bgcolor=F5F1EB`;
+  /* Hide confirm button for honeymoon / free donation (can't mark as "purchased") */
+  document.getElementById('pmConfirmBtn').style.display = (isHoney || amount===0) ? 'none' : 'block';
+  openModal('pixModal');
+}
+
+function openPixDirect() {
+  currentProduct = null;
+  openPix('Contribuição Livre', 0, false);
+}
+
+function openHPix() { openPix('Lua de Mel', honeyAmt, true); }
+
+function confirmPayment() {
+  if (!currentProduct) { closeModal('pixModal'); return; }
+  const { name, amount } = currentProduct;
+
+  /* Mark locally */
+  const bought = getPurchased();
+  if (!bought.includes(name)) { bought.push(name); savePurchased(bought); }
+
+  /* Update card UI immediately */
+  markCardPurchased(name);
+
+  /* Notify via Formspree */
+  const fd = new FormData();
+  fd.append('_subject', `🎁 Presente comprado: ${name}`);
+  fd.append('tipo',     'compra');
+  fd.append('item',     name);
+  fd.append('valor',    fmt(amount));
+  fetch(CFG.formspreeUrl, { method:'POST', body:fd, headers:{ Accept:'application/json' } })
+    .catch(()=>{});
+
+  closeModal('pixModal');
+}
+
+/* ─────────────────────────────────────────
+   HONEYMOON
+───────────────────────────────────────── */
+let honeyAmt = 200;
+function selHoney(btn) {
+  document.querySelectorAll('.h-amt').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  honeyAmt = parseInt(btn.dataset.value);
+}
+
+/* ─────────────────────────────────────────
+   MODAL UTILS
+───────────────────────────────────────── */
+function openModal(id)  { document.getElementById(id).classList.add('open');    document.body.style.overflow='hidden'; }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
+
+document.querySelectorAll('.modal-bd').forEach(m =>
+  m.addEventListener('click', e => { if(e.target===m) closeModal(m.id); })
+);
+
+function copyPix() {
+  navigator.clipboard.writeText(CFG.pixKey).catch(()=>{
+    const t = Object.assign(document.createElement('textarea'),{value:CFG.pixKey});
+    document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove();
+  });
+  const btn = document.getElementById('pmCopyBtn');
+  btn.textContent='Copiado ✓'; btn.classList.add('copied');
+  setTimeout(()=>{ btn.textContent='Copiar'; btn.classList.remove('copied'); },2500);
+}
+
+/* ─────────────────────────────────────────
+   LIGHTBOX
+───────────────────────────────────────── */
+function openLightbox(el) {
+  const src = el.dataset.src || el.querySelector('img')?.src;
+  if (!src) return;
+  document.getElementById('lbImg').src = src;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ─────────────────────────────────────────
+   RSVP
+───────────────────────────────────────── */
+function handleRsvp(e) {
+  e.preventDefault();
+  const form = document.getElementById('rsvpForm');
+  fetch(form.action, { method:'POST', body:new FormData(form), headers:{Accept:'application/json'} })
+    .then(r => {
+      if (r.ok) { form.style.display='none'; document.getElementById('rsvpThanks').style.display='block'; }
+      else { alert('Erro ao enviar. Tente novamente.'); }
+    })
+    .catch(() => {
+      form.style.display='none';
+      document.getElementById('rsvpThanks').style.display='block';
+    });
+}
+
+/* ─────────────────────────────────────────
+   NAV
+───────────────────────────────────────── */
+function syncNav() {
+  /* Smooth scroll-linked transition — fully converged by p = 0.30 */
+  const si    = window.scrollY - heroTop;
+  const total = Math.max(1, heroH - winH);
+  const p     = clamp(si / total, 0, 1);
+  const t     = clamp(p / 0.30, 0, 1);
+
+  const nb   = document.getElementById('navbar');
+  const ni   = nb.querySelector('.nav-inner');
+  const logo = nb.querySelector('.nav-logo');
+  const tog  = nb.querySelector('.nav-toggle');
+
+  /* Outer navbar padding */
+  nb.style.padding = `${(t * 12).toFixed(1)}px 48px`;
+
+  /* Inner pill morphs in */
+  ni.style.background     = `rgba(253,250,246,${(t * 0.97).toFixed(3)})`;
+  ni.style.borderRadius   = `${(t * 50).toFixed(1)}px`;
+  ni.style.height         = `${lerp(72, 52, t).toFixed(1)}px`;
+  ni.style.maxWidth       = `${lerp(1200, 820, t).toFixed(0)}px`;
+  ni.style.boxShadow      = `0 4px 24px rgba(44,24,16,${(t * 0.13).toFixed(3)})`;
+  ni.style.backdropFilter = `blur(${(t * 16).toFixed(1)}px)`;
+  ni.style.padding        = `0 ${lerp(12, 24, t).toFixed(0)}px`;
+
+  /* Logo: white → brown */
+  const logoCol = `rgb(${Math.round(lerp(255,44,t))},${Math.round(lerp(255,24,t))},${Math.round(lerp(255,16,t))})`;
+  logo.style.color = logoCol;
+  if (tog) tog.style.color = logoCol;
+
+  /* Links: rgba(255,255,255,.82) → brown-mid */
+  const lCol = `rgba(${Math.round(lerp(255,90,t))},${Math.round(lerp(255,62,t))},${Math.round(lerp(255,43,t))},${lerp(0.82,1,t).toFixed(2)})`;
+  nb.querySelectorAll('.nav-links a').forEach(a => a.style.color = lCol);
+
+  /* RSVP pill: white bg/dark text → dark bg/white text */
+  const rsvp = nb.querySelector('.nav-rsvp');
+  if (rsvp) {
+    rsvp.style.background = `rgb(${Math.round(lerp(255,44,t))},${Math.round(lerp(255,24,t))},${Math.round(lerp(255,16,t))})`;
+    rsvp.style.color      = `rgb(${Math.round(lerp(44,255,t))},${Math.round(lerp(24,255,t))},${Math.round(lerp(16,255,t))})`;
+  }
+}
+function openMobileMenu()  { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMobileMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+
+/* ─────────────────────────────────────────
+   SCROLL DISPATCH  (rAF-throttled)
+───────────────────────────────────────── */
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      animateHero();
+      animateStacks();
+      syncNav();
+      ticking = false;
+    });
+    ticking = true;
+  }
+}, { passive:true });
+
+window.addEventListener('resize', () => {
+  winH = window.innerHeight;
+  measureHero();
+  animateHero();
+  animateStacks();
+}, { passive:true });
+
+document.addEventListener('keydown', e => {
+  if (e.key==='Escape') { closeModal('pixModal'); closeLightbox(); closeMobileMenu(); }
+});
+
+/* ─────────────────────────────────────────
+   INIT
+───────────────────────────────────────── */
+measureHero();
+animateHero();
+animateStacks();
+syncNav();
+buildGrid();
+tick();
+setInterval(tick, 1000);
+
+</script>
+</body>
+</html>
