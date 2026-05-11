@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Rename-Item -Path \"C:\\\\Users\\\\erica\\\\wedding\\\\Eric+Olivia\" -NewName \"Eric-Olivia\")"
+    ]
+  }
+}
