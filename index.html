@@ -7,7 +7,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,600&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <script src="https://js.stripe.com/v3/"></script>
 
   <style>
     /* ── VARIABLES ── */
@@ -478,7 +477,7 @@
     footer .ft-names { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1rem; color: rgba(255,255,255,.52); letter-spacing: .14em; margin-bottom: 7px; }
     footer p { font-size: .66rem; letter-spacing: .1em; }
 
-    /* ── STRIPE MODAL ── */
+    /* ── PIX MODAL ── */
     .modal-bd {
       display: none; position: fixed; inset: 0;
       background: rgba(44,24,16,.6); backdrop-filter: blur(4px);
@@ -508,46 +507,34 @@
     .m-amount { text-align: center; margin-bottom: 20px; }
     .m-amount-lbl { font-size: .6rem; letter-spacing: .22em; text-transform: uppercase; color: var(--brown-lt); margin-bottom: 4px; }
     .m-amount-val { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 400; color: var(--brown); }
+    /* PIX key display */
+    .pix-key-wrap {
+      background: var(--cream); border: 1px solid var(--border);
+      padding: 16px 18px; text-align: center; margin-bottom: 12px;
+    }
+    .pix-key-lbl { font-size: .58rem; letter-spacing: .2em; text-transform: uppercase; color: var(--brown-lt); margin-bottom: 6px; }
+    .pix-key-val { font-size: 1.35rem; font-weight: 600; color: var(--brown); letter-spacing: .04em; font-family: 'Inter', sans-serif; }
+    /* Big copy button */
+    .pix-copy-btn {
+      width: 100%; padding: 15px; background: var(--gold); border: none;
+      color: white; font-size: .7rem; letter-spacing: .16em; text-transform: uppercase;
+      font-weight: 600; cursor: pointer; transition: background .25s; font-family: 'Inter', sans-serif;
+      display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 16px;
+    }
+    .pix-copy-btn:active { transform: scale(.98); }
+    .pix-copy-btn.copied { background: #2D7D4F; }
+    /* Step instructions */
+    .m-instr { background: #FFF9F2; border-left: 3px solid var(--gold); padding: 13px 15px; margin-bottom: 16px; }
+    .m-instr-title { font-size: .7rem; font-weight: 600; color: var(--brown); margin-bottom: 8px; }
+    .m-instr ol { padding-left: 16px; }
+    .m-instr li { font-size: .76rem; line-height: 1.85; color: var(--brown-mid); }
+    /* Confirm button */
     .m-confirm {
       width: 100%; padding: 13px; background: var(--brown); border: none;
       color: white; font-size: .66rem; letter-spacing: .18em; text-transform: uppercase;
       font-weight: 500; cursor: pointer; transition: background .3s; font-family: 'Inter', sans-serif;
-      display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 4px;
     }
-    .m-confirm:hover:not(:disabled) { background: var(--brown-mid); }
-    .m-confirm:disabled { opacity: .6; cursor: not-allowed; }
-    /* Stripe element wrapper */
-    #stripe-element { min-height: 44px; margin-bottom: 16px; }
-    /* Error message */
-    .sm-error {
-      background: #fff2f2; border-left: 3px solid #c0392b;
-      padding: 10px 13px; margin-bottom: 14px;
-      font-size: .74rem; color: #c0392b; line-height: 1.5;
-    }
-    /* Loading spinner */
-    .sm-spin {
-      display: inline-block; width: 13px; height: 13px;
-      border: 2px solid rgba(255,255,255,.35); border-top-color: white;
-      border-radius: 50%; animation: sm-rotate .65s linear infinite;
-    }
-    @keyframes sm-rotate { to { transform: rotate(360deg); } }
-    /* Success icon */
-    .sm-success-icon {
-      width: 46px; height: 46px; background: #2D7D4F; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 14px; color: white; font-size: 1.3rem;
-    }
-    /* Free-amount input */
-    .sm-free-lbl {
-      font-size: .6rem; letter-spacing: .18em; text-transform: uppercase;
-      color: var(--brown-lt); display: block; margin-bottom: 6px;
-    }
-    .sm-free-input {
-      width: 100%; padding: 11px 12px; border: 1px solid var(--border);
-      background: var(--cream); font-size: 1rem; color: var(--brown);
-      font-family: 'Inter', sans-serif; outline: none; margin-bottom: 14px;
-    }
-    .sm-free-input:focus { border-color: var(--brown-lt); }
+    .m-confirm:hover { background: var(--brown-mid); }
 
     /* ── LIGHTBOX ── */
     #lightbox {
@@ -910,18 +897,18 @@
     <div class="presentes-hdr">
       <span class="section-label">Lista de Presentes</span>
       <h2>Nossos Presentes</h2>
-      <p>Cada presente é um pedacinho do nosso lar. Clique para presentear com cartão.</p>
+      <p>Cada presente é um pedacinho do nosso lar. Clique para presentear via PIX.</p>
       <div style="display:flex;align-items:flex-start;gap:10px;background:var(--offwhite);border:1px solid var(--border);border-left:3px solid var(--gold);padding:14px 18px;margin:0 auto 32px;max-width:560px;text-align:left;">
         <svg style="flex-shrink:0;margin-top:2px" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        <p style="font-size:.82rem;line-height:1.65;color:var(--brown-mid);font-family:'Inter',sans-serif;margin:0"><strong style="color:var(--brown)">Por favor, não traga presentes físicos.</strong> Como estaremos viajando logo após o casamento, não teremos como levá-los conosco. Os presentes desta lista são todos pagos com cartão — seguro, simples e sem complicação!</p>
+        <p style="font-size:.82rem;line-height:1.65;color:var(--brown-mid);font-family:'Inter',sans-serif;margin:0"><strong style="color:var(--brown)">Por favor, não traga presentes físicos.</strong> Como estaremos viajando logo após o casamento, não teremos como levá-los conosco. Os presentes desta lista são todos via PIX — rápido, seguro e sem complicação!</p>
       </div>
       <div class="pix-banner">
         <span class="qs-label">Contribuição direta:</span>
-        <button class="qs-btn" onclick="openStripe('Contribuição Livre', 0, false)">
+        <button class="qs-btn" onclick="openPixDirect()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M12 2l2.83 7.17L22 12l-7.17 2.83L12 22l-2.83-7.17L2 12l7.17-2.83L12 2Z"/>
           </svg>
-          Contribuição Livre
+          PIX — Contribuição Livre
         </button>
       </div>
     </div>
@@ -940,9 +927,9 @@
       </div>
       <button class="h-pay-btn" onclick="openHPix()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>
+          <path d="M12 2l2.83 7.17L22 12l-7.17 2.83L12 22l-2.83-7.17L2 12l7.17-2.83L12 2Z"/>
         </svg>
-        Contribuir com cartão
+        Contribuir via PIX
       </button>
     </div>
 
@@ -968,44 +955,44 @@
 </footer>
 
 
-<!-- ════════════ STRIPE PAYMENT MODAL ════════════ -->
-<div class="modal-bd" id="stripeModal">
+<!-- ════════════ PIX MODAL ════════════ -->
+<div class="modal-bd" id="pixModal">
   <div class="modal-card">
     <div class="m-hdr">
-      <h3 id="smTitle">Presente</h3>
-      <p  id="smSub">Pagamento com cartão</p>
-      <button class="m-close" onclick="closeStripeModal()">×</button>
+      <h3 id="pmTitle">Presente</h3>
+      <p  id="pmSub">Pagamento via PIX</p>
+      <button class="m-close" onclick="closeModal('pixModal')">×</button>
     </div>
     <div class="m-body">
 
       <div class="m-amount">
-        <p class="m-amount-lbl">Valor</p>
-        <p class="m-amount-val" id="smAmt">—</p>
+        <p class="m-amount-lbl">Valor a transferir</p>
+        <p class="m-amount-val" id="pmAmt">—</p>
       </div>
 
-      <!-- Step 1 — free-amount entry (shown only for "Contribuição Livre") -->
-      <div id="smFreeForm" style="display:none;">
-        <label class="sm-free-lbl" for="smFreeInput">Qual valor você gostaria de contribuir?</label>
-        <input type="number" class="sm-free-input" id="smFreeInput" min="10" step="10" placeholder="Ex: 100">
-        <button class="m-confirm" onclick="proceedToCard()">Continuar →</button>
+      <div class="pix-key-wrap">
+        <p class="pix-key-lbl">Chave PIX — Telefone</p>
+        <p class="pix-key-val" id="pmKey">11980595860</p>
       </div>
 
-      <!-- Step 2 — Stripe card form -->
-      <div id="smCardForm" style="display:none;">
-        <div id="stripe-element"></div>
-        <div class="sm-error" id="smError" style="display:none;"></div>
-        <button class="m-confirm" id="smPayBtn" onclick="submitStripePayment()">
-          <span id="smBtnText">Pagar</span>
-          <span id="smSpinner" class="sm-spin" style="display:none;"></span>
-        </button>
+      <button class="pix-copy-btn" id="pmCopyBtn" onclick="copyPix()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+        <span id="pmCopyTxt">Copiar Chave PIX</span>
+      </button>
+
+      <div class="m-instr">
+        <p class="m-instr-title">📱 Como pagar pelo celular:</p>
+        <ol>
+          <li>Abra o app do seu banco</li>
+          <li>Acesse <strong>PIX → Transferir</strong></li>
+          <li>Cole a chave que você copiou</li>
+          <li>Confirme o valor <strong id="pmInstr"></strong> e envie!</li>
+        </ol>
       </div>
 
-      <!-- Step 3 — success -->
-      <div id="smSuccess" style="display:none;text-align:center;padding:14px 0 6px;">
-        <div class="sm-success-icon">✓</div>
-        <p style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--brown);margin-bottom:8px;">Pagamento realizado!</p>
-        <p style="font-size:.76rem;color:var(--brown-mid);line-height:1.65;">Muito obrigados pelo carinho 💛<br>Mal podemos esperar para ver você!</p>
-      </div>
+      <button class="m-confirm" id="pmConfirmBtn" onclick="confirmPayment()">Já realizei o pagamento ✓</button>
 
     </div>
   </div>
@@ -1032,11 +1019,8 @@
    CONFIG
 ───────────────────────────────────────── */
 const CFG = {
-  formspreeUrl:  'https://formspree.io/f/xeenlryn',
-  /* ↓ When deployed on Vercel this relative path just works.
-       If you keep GitHub Pages, replace with your full Vercel URL:
-       'https://your-project.vercel.app/api/create-payment-intent'   */
-  stripeApiUrl:  '/api/create-payment-intent',
+  pixKey:       '11980595860',
+  formspreeUrl: 'https://formspree.io/f/xeenlryn',
 };
 
 /* ─────────────────────────────────────────
@@ -1448,7 +1432,7 @@ function buildGrid() {
     c.className = 'product-card'+(done?' purchased':'');
     c.dataset.name  = p.name;
     c.dataset.price = p.price;
-    if (!done) c.onclick = () => openStripe(p.name, p.price, false);
+    if (!done) c.onclick = () => openPix(p.name, p.price, false);
     const imgTag = p.img
       ? `<img class="p-real-img" src="${p.img}" alt="${p.name}" onerror="this.style.display='none'">`
       : '';
@@ -1485,154 +1469,61 @@ function buildGrid() {
 }
 
 /* ─────────────────────────────────────────
-   STRIPE PAYMENT
+   PIX MODAL
 ───────────────────────────────────────── */
-const STRIPE_PK = 'pk_test_51TW202QaF4jgXqjlUHotU2f49YxnxVLn1uFVR2CkZraqoPgmKHVKO1OTyDmQYH6W0L4qxTmoGh8Db5xOVeig5mIy00Z8PszDvQ';
-let _stripe        = null;
-let _stripeEls     = null;
 let currentProduct = null;
 
-function getStripe() {
-  if (!_stripe) _stripe = Stripe(STRIPE_PK);
-  return _stripe;
-}
-
-function openStripe(name, amount, isHoney) {
+function openPix(name, amount, isHoney) {
   currentProduct = { name, amount, isHoney };
-  document.getElementById('smTitle').textContent = isHoney ? 'Lua de Mel' : name;
-  document.getElementById('smSub')  .textContent = isHoney ? 'Contribuição — Lua de Mel' : 'Pagamento com cartão';
-  document.getElementById('smAmt')  .textContent = amount > 0 ? fmt(amount) : '—';
-  /* Reset all steps */
-  document.getElementById('smFreeForm').style.display = 'none';
-  document.getElementById('smCardForm').style.display = 'none';
-  document.getElementById('smSuccess') .style.display = 'none';
-  document.getElementById('smError')   .style.display = 'none';
-  document.getElementById('stripe-element').innerHTML = '';
-  _stripeEls = null;
-  openModal('stripeModal');
-  if (amount === 0) {
-    /* Free donation: ask for amount first */
-    document.getElementById('smFreeInput').value = '';
-    document.getElementById('smFreeForm').style.display = 'block';
-  } else {
-    initStripeElement(amount);
-  }
+  document.getElementById('pmTitle') .textContent = isHoney ? 'Lua de Mel' : name;
+  document.getElementById('pmSub')   .textContent = isHoney ? 'Contribuição — Lua de Mel' : 'Pagamento via PIX';
+  document.getElementById('pmAmt')   .textContent = amount > 0 ? fmt(amount) : '(Valor à sua escolha)';
+  document.getElementById('pmInstr') .textContent = amount > 0 ? `de ${fmt(amount)}` : 'desejado';
+  document.getElementById('pmCopyTxt').textContent = 'Copiar Chave PIX';
+  document.getElementById('pmCopyBtn').classList.remove('copied');
+  /* Hide confirm button for honeymoon / free donation */
+  document.getElementById('pmConfirmBtn').style.display = (isHoney || amount === 0) ? 'none' : 'block';
+  openModal('pixModal');
 }
 
-async function initStripeElement(amount) {
-  document.getElementById('smCardForm').style.display = 'block';
-  const btn = document.getElementById('smPayBtn');
-  btn.disabled = true;
-  document.getElementById('smBtnText').textContent = 'Carregando...';
-  document.getElementById('stripe-element').innerHTML =
-    '<p style="font-size:.74rem;color:var(--brown-lt);text-align:center;padding:14px 0;">Carregando formulário de pagamento…</p>';
-  try {
-    const resp = await fetch(CFG.stripeApiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount, description: currentProduct?.name || 'Presente de casamento' })
-    });
-    if (!resp.ok) {
-      const e = await resp.json().catch(() => ({ error: `HTTP ${resp.status}` }));
-      throw new Error(e.error || 'Erro no servidor');
-    }
-    const { clientSecret } = await resp.json();
-    const stripe = getStripe();
-    _stripeEls = stripe.elements({
-      clientSecret,
-      appearance: {
-        theme: 'stripe',
-        variables: {
-          colorPrimary:     '#2C1810',
-          colorBackground:  '#FDFAF6',
-          colorText:        '#2C1810',
-          colorDanger:      '#c0392b',
-          fontFamily:       '"Inter", sans-serif',
-          spacingUnit:      '3px',
-          borderRadius:     '2px',
-          fontSizeBase:     '14px',
-        },
-        rules: {
-          '.Input':       { border: '1px solid #DDD6C8', boxShadow: 'none' },
-          '.Input:focus': { border: '1px solid #8B6948', boxShadow: 'none', outline: 'none' },
-        }
-      }
-    });
-    const payEl = _stripeEls.create('payment');
-    document.getElementById('stripe-element').innerHTML = '';
-    payEl.mount('#stripe-element');
-    btn.disabled = false;
-    document.getElementById('smBtnText').textContent = `Pagar ${fmt(amount)}`;
-  } catch(err) {
-    document.getElementById('smCardForm').style.display = 'none';
-    document.getElementById('smError').textContent = `Erro ao carregar: ${err.message}`;
-    document.getElementById('smError').style.display = 'block';
-  }
+function openPixDirect() {
+  currentProduct = null;
+  openPix('Contribuição Livre', 0, false);
 }
 
-function proceedToCard() {
-  const val = parseInt(document.getElementById('smFreeInput').value, 10);
-  if (!val || val < 10) {
-    alert('Por favor, insira um valor mínimo de R$ 10.');
-    return;
-  }
-  currentProduct.amount = val;
-  document.getElementById('smAmt').textContent = fmt(val);
-  document.getElementById('smFreeForm').style.display = 'none';
-  initStripeElement(val);
-}
+function openHPix() { openPix('Lua de Mel', honeyAmt, true); }
 
-async function submitStripePayment() {
-  if (!_stripeEls) return;
-  const btn = document.getElementById('smPayBtn');
-  btn.disabled = true;
-  document.getElementById('smBtnText').style.display = 'none';
-  document.getElementById('smSpinner').style.display = 'inline-block';
-  document.getElementById('smError')  .style.display = 'none';
-  const stripe = getStripe();
-  const { error } = await stripe.confirmPayment({
-    elements:      _stripeEls,
-    confirmParams: { return_url: window.location.href },
-    redirect:      'if_required',
-  });
-  if (error) {
-    document.getElementById('smError').textContent = error.message;
-    document.getElementById('smError').style.display = 'block';
-    btn.disabled = false;
-    document.getElementById('smBtnText').style.display = 'inline';
-    document.getElementById('smSpinner').style.display = 'none';
-    return;
-  }
-  onPaymentSuccess();
-}
-
-function onPaymentSuccess() {
-  const { name, amount, isHoney } = currentProduct;
-  /* Mark as purchased for registry items */
-  if (!isHoney && amount > 0) {
-    const bought = getPurchased();
-    if (!bought.includes(name)) { bought.push(name); savePurchased(bought, name); }
-    markCardPurchased(name);
-  }
+function confirmPayment() {
+  if (!currentProduct) { closeModal('pixModal'); return; }
+  const { name, amount } = currentProduct;
+  /* Mark locally + Firebase */
+  const bought = getPurchased();
+  if (!bought.includes(name)) { bought.push(name); savePurchased(bought, name); }
+  markCardPurchased(name);
   /* Notify via Formspree */
   const fd = new FormData();
-  fd.append('_subject', `🎁 Presente pago (cartão): ${name}`);
-  fd.append('tipo',  'compra_cartao');
+  fd.append('_subject', `🎁 Presente comprado: ${name}`);
+  fd.append('tipo',  'compra');
   fd.append('item',  name);
   fd.append('valor', fmt(amount));
   fetch(CFG.formspreeUrl, { method:'POST', body:fd, headers:{ Accept:'application/json' } }).catch(()=>{});
-  /* Show success */
-  document.getElementById('smCardForm').style.display = 'none';
-  document.getElementById('smSuccess') .style.display = 'block';
-  setTimeout(() => closeStripeModal(), 4000);
+  closeModal('pixModal');
 }
 
-function closeStripeModal() {
-  closeModal('stripeModal');
-  _stripeEls = null;
+function copyPix() {
+  const key = CFG.pixKey;
+  navigator.clipboard.writeText(key).catch(() => {
+    const t = Object.assign(document.createElement('textarea'), { value: key });
+    document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove();
+  });
+  const btn = document.getElementById('pmCopyBtn');
+  document.getElementById('pmCopyTxt').textContent = 'Chave copiada! ✓';
+  btn.classList.add('copied');
+  setTimeout(() => {
+    document.getElementById('pmCopyTxt').textContent = 'Copiar Chave PIX';
+    btn.classList.remove('copied');
+  }, 3000);
 }
-
-function openHPix() { openStripe('Lua de Mel', honeyAmt, true); }
 
 /* ─────────────────────────────────────────
    HONEYMOON
@@ -1651,11 +1542,7 @@ function openModal(id)  { document.getElementById(id).classList.add('open');    
 function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
 
 document.querySelectorAll('.modal-bd').forEach(m =>
-  m.addEventListener('click', e => {
-    if (e.target !== m) return;
-    if (m.id === 'stripeModal') closeStripeModal();
-    else closeModal(m.id);
-  })
+  m.addEventListener('click', e => { if (e.target === m) closeModal(m.id); })
 );
 
 /* ─────────────────────────────────────────
@@ -1760,7 +1647,7 @@ window.addEventListener('resize', () => {
 }, { passive:true });
 
 document.addEventListener('keydown', e => {
-  if (e.key==='Escape') { closeStripeModal(); closeLightbox(); closeMobileMenu(); }
+  if (e.key==='Escape') { closeModal('pixModal'); closeLightbox(); closeMobileMenu(); }
 });
 
 /* ─────────────────────────────────────────
